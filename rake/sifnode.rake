@@ -1,14 +1,14 @@
 desc "Manage sifnode deploy, upgrade, etc processes"
 namespace :sifnode do
 
-    desc "Manage sifnode deploy, upgrade, etc processes"
+    desc "Standalone sifnode"
     namespace :standalone do
 
         desc "Deploy a single standalone sifnode on to your cluster"
-        task :standalone, [:cluster, :chainnet, :provider, :namespace, :image, :image_tag, :moniker, :mnemonic, :admin_clp_addresses, :admin_oracle_address, :minimum_gas_prices, :enable_rpc, :enable_external_rpc] do |t, args|
+        task :deploy, [:cluster, :chainnet, :provider, :namespace, :image, :image_tag, :moniker, :mnemonic, :admin_clp_addresses, :admin_oracle_address, :minimum_gas_prices, :enable_rpc, :enable_external_rpc] do |t, args|
           check_args(args)
 
-          cmd = %Q{helm upgrade sifnode #{cwd}/../../deploy/helm/sifnode \
+          cmd = %Q{helm upgrade sifnode #{cwd}/../../deploy/helm/sifnode42 \
             --set sifnode.env.chainnet=#{args[:chainnet]} \
             --set sifnode.env.moniker=#{args[:moniker]} \
             --set sifnode.args.mnemonic=#{args[:mnemonic]} \
@@ -26,10 +26,15 @@ namespace :sifnode do
         end
 
         desc "Deploy a single network-aware sifnode on to your cluster"
-        task :peer, [:cluster, :chainnet, :provider, :namespace, :image, :image_tag, :moniker, :mnemonic, :peer_address, :genesis_url, :enable_rpc, :enable_external_rpc] do |t, args|
+    end
+
+    desc "Peer sifnode"
+    namespace :peer do
+      desc "Deploy a new network-aware sifnode to your cluster"
+        task :deploy, [:cluster, :chainnet, :provider, :namespace, :image, :image_tag, :moniker, :mnemonic, :peer_address, :genesis_url, :enable_rpc, :enable_external_rpc] do |t, args|
           check_args(args)
 
-          cmd = %Q{helm upgrade sifnode #{cwd}/../../deploy/helm/sifnode \
+          cmd = %Q{helm upgrade sifnode #{cwd}/../../deploy/helm/sifnode42 \
             --install -n #{ns(args)} --create-namespace \
             --set sifnode.env.chainnet=#{args[:chainnet]} \
             --set sifnode.env.moniker=#{args[:moniker]} \
@@ -44,22 +49,6 @@ namespace :sifnode do
 
           system({"KUBECONFIG" => kubeconfig(args)}, cmd)
         end
-
-        desc "Deploy the sifnode API to your cluster"
-        task :api, [:cluster, :chainnet, :provider, :namespace, :image, :image_tag, :node_host] do |t, args|
-          check_args(args)
-
-          cmd = %Q{helm upgrade sifnode-api #{cwd}/../../deploy/helm/sifnode-api \
-            --install -n #{ns(args)} --create-namespace \
-            --set sifnodeApi.args.chainnet=#{args[:chainnet]} \
-            --set sifnodeApi.args.nodeHost=#{args[:node_host]} \
-            --set image.tag=#{image_tag(args)} \
-            --set image.repository=#{image_repository(args)}
-          }
-
-          system({"KUBECONFIG" => kubeconfig(args)}, cmd)
-        end
-
     end
 
     desc "Sifnode with Vault"

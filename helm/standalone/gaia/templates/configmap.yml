@@ -40,9 +40,19 @@ data:
     if [ -f $HOME/.gaia/config/genesis.json ]; then
       exit 0
     fi
-    gaiad init $MONIKER
-    mkdir -p TMP_DIR
-    wget -O $TMP_DIR/genesis.cosmoshub-4.json.gz https://github.com/cosmos/mainnet/raw/master/genesis.cosmoshub-4.json.gz
-    gunzip $TMP_DIR/genesis.cosmoshub-4.json.gz
-    mv $TMP_DIR/genesis.cosmoshub-4.json $HOME/.gaia/config/genesis.json
+
+    if [ $CHAINNET == "devnet" ] || [ $CHAINNET == "testnet" ]; then
+      gaiad init $MONIKER
+
+      curl -s https://rpc.testnet.cosmos.network/genesis | jq -r .result.genesis > $HOME/.gaia/config/genesis.json
+      sed -i 's/seeds =.*/seeds = "30dce239c56cfd25cf0cebf5726c7c8be1e46f66@p2p.testnet.cosmos.network:31626,754a5f864adc5a60b287d4aed4f0ab11d8b056c8@p2p.testnet.cosmos.network:31654"/g' $HOME/.gaia/config/config.toml
+    else
+      gaiad init $MONIKER
+
+      mkdir -p TMP_DIR
+      wget -O $TMP_DIR/genesis.cosmoshub-4.json.gz https://github.com/cosmos/mainnet/raw/master/genesis.cosmoshub-4.json.gz
+      gunzip $TMP_DIR/genesis.cosmoshub-4.json.gz
+      mv $TMP_DIR/genesis.cosmoshub-4.json $HOME/.gaia/config/genesis.json
+    fi
+
     sed -i -e "s/external_address = \"\"/external_address = \"${EXTERNAL_IP}:26656\"/g" $HOME/.gaia/config/config.toml

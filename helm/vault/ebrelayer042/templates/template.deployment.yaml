@@ -37,7 +37,7 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "while [ ! -f /vault/secrets/ebrelayer ]; do sleep 1; done && source /vault/secrets/ebrelayer && ebrelayer init $nodeHost $ethWebsocketAddress $ethBridgeRegistryAddress $MONIKER \"$mnemonic\" --chain-id $CHAINNET --gas $gas --gas-prices $gasPrices"]
+          args: ["-c", "while [ ! -f /vault/secrets/ebrelayer ]; do sleep 1; done && source /vault/secrets/ebrelayer && echo \"$mnemonic\" | sifnoded keys add $MONIKER --keyring-backend test --recover && ebrelayer init $nodeHost $ethWebsocketAddress $ethBridgeRegistryAddress $MONIKER \"$mnemonic\" --from $MONIKER --chain-id $CHAINNET --node $nodeHost --gas $gas --keyring-backend test"]
           volumeMounts:
             - name: data
               mountPath: /relayerdb

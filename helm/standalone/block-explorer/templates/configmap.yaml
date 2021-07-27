@@ -8,6 +8,7 @@ data:
   settings: |
     {
         "public":{
+            "genesisTime": "{{ .Values.blockExplorer.args.genesisTime }}",
             "chainName": "Sifchain",
             "chainId": "{{ .Values.blockExplorer.env.chainnet }}",
             "gtm": "",
@@ -398,7 +399,7 @@ data:
             "readGenesis": true
         },
         "params":{
-            "startHeight": 0,
+            "startHeight": {{ .Values.blockExplorer.args.startHeight }},
             "defaultBlockTime": 5000,
             "blockInterval": 15000,
             "consensusInterval": 1000,

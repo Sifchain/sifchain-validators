@@ -22,9 +22,12 @@ image:
 
 blockExplorer:
   args:
+    genesisTime: "2021-01-01T00:00:00.000000000Z"
+    startHeight: 1000
     mongoUsername: "mongodb"
     mongoPassword:
     mongoDatabase: "block_explorer"
+    mongoHostname: "mongodb.mongodb"
   env:
     rootURL: "http://localhost:3000"
     chainnet: ""

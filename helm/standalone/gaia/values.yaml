@@ -18,14 +18,15 @@ securityContext: {}
 image:
   repository: sifchain/gaiad
   pullPolicy: Always
-  tag: latest
+  tag: cosmoshub-testnet
 
 gaia:
   args:
     p2p:
-      seeds: ""
+      seeds:
   env:
     moniker: ""
+    chainnet: "devnet"
 
 service:
   type: LoadBalancer

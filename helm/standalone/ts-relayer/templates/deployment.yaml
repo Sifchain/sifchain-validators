@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ts-relayer.fullname" . }}
+  labels:
+    {{- include "ts-relayer.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  strategy:
+    type: {{ .Values.strategyType }}
+  selector:
+    matchLabels:
+      {{- include "ts-relayer.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "ts-relayer.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "ts-relayer.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: setup
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          command: ["/scripts/setup.sh", "{{ .Values.tsRelayer.args.mnemonic }}"]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+          env:
+            - name: CHAINNET0
+              value: {{ .Values.tsRelayer.env.chainnet0 }}
+            - name: CHAINNET1
+              value: {{ .Values.tsRelayer.env.chainnet1 }}
+            - name: PREFIX0
+              value: {{ .Values.tsRelayer.env.prefix0 }}
+            - name: PREFIX1
+              value: {{ .Values.tsRelayer.env.prefix1 }}
+            - name: GAS_PRICE0
+              value: {{ .Values.tsRelayer.env.gas_price0 }}
+            - name: GAS_PRICE1
+              value: {{ .Values.tsRelayer.env.gas_price1 }}
+            - name: RPC0
+              value: {{ .Values.tsRelayer.env.rpc0 }}
+            - name: RPC1
+              value: {{ .Values.tsRelayer.env.rpc1 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/scripts/start.sh", "{{ .Values.tsRelayer.args.mnemonic }}"]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "ts-relayer.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "ts-relayer.fullname" . }}-scripts
+          defaultMode: 0777
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

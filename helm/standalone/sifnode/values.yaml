@@ -21,7 +21,19 @@ image:
   tag: "testnet"
 
 sifnode:
+  upgrade:
+    initialHeight: "1000"
+    chainnet: "sifchain-testnet-042"
+    cosmosSDKVersion: "0.40"
+    genesisTime: "2021-07-01T00:00:00Z"
+    version: "0.9.0-rc.7"
+    currentVersion: "0.8.8"
+    dataMigrateVersion: "0.9"
+    timestamp:
   args:
+    upgradeNode: false
+    createBackup: false
+    bucket:
     mnemonic: ""
     genesisURL:
     mintAmount: "999999000000000000000000000rowan"
@@ -34,11 +46,13 @@ sifnode:
     minimumGasPrices: "0.5rowan"
     govMaxDepositPeriod: "10800000000000"
     govVotingPeriod: "10800000000000"
+    state:
+      importURL:
   env:
     daemonHome: "/root/.sifnoded"
     daemonName: "sifnoded"
     daemonAllowDownloadBinaries: true
-    daemonRestartAfterUpgrade: true
+    daemonRestartAfterUpgrade: false
     chainnet:
     moniker:
 

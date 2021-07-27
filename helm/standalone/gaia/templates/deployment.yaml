@@ -44,6 +44,8 @@ spec:
             - name: data
               mountPath: /root
           env:
+            - name: CHAINNET
+              value: {{ .Values.gaia.env.chainnet }}
             - name: MONIKER
               value: {{ .Values.gaia.env.moniker }}
             - name: EXTERNAL_IP
@@ -56,7 +58,12 @@ spec:
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["gaiad", "start", "--p2p.seeds={{ .Values.gaia.args.p2p.seeds }}", "--x-crisis-skip-assert-invariants"]
+          command: ["/bin/sh"]
+          {{- if .Values.gaia.args.p2p.seeds }}
+          args: ["-c", "gaiad start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.seeds={{ .Values.gaia.args.p2p.seeds }} --x-crisis-skip-assert-invariants --log_format json"]
+          {{- else }}
+          args: ["-c", "gaiad start --rpc.laddr=tcp://0.0.0.0:26657 --x-crisis-skip-assert-invariants --log_format json"]
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: /root

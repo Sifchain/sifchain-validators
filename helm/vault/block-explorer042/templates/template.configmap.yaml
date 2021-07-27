@@ -8,6 +8,7 @@ data:
   settings: |
     {
         "public":{
+            "genesisTime": "2021-06-22T07:35:24.417176376Z",
             "chainName": "Sifchain",
             "chainId": "-=CHAINNET=-",
             "gtm": "",
@@ -389,7 +390,6 @@ data:
             "gasPrice": 0.02,
             "coingeckoId": "sifchain"
         },
-        "genesisTime": "2021-02-11T11:59:14.685903388Z",
         "remote":{
             "rpc": "-=RPC_URL=-",
             "api": "-=API_URL=-"
@@ -399,7 +399,7 @@ data:
             "readGenesis": true
         },
         "params":{
-            "startHeight": 0,
+            "startHeight": 1,
             "defaultBlockTime": 5000,
             "blockInterval": 15000,
             "consensusInterval": 1000,

@@ -1142,7 +1142,7 @@ sleep 15
   desc "deploy helm chart"
   namespace :helm do
     desc "Deploy helm chart using arguments passed in"
-    task :pipeline_deploy_by_path, [:appname, :namespace, :args, :path] do |t, args|
+    task :pipeline_deploy_by_path, [:appname, :namespace, :path, :args] do |t, args|
       cmd = %Q{helm upgrade #{args[:appname]} \
 #{args[:path]} \
 --install -n #{args[:namespace]} --create-namespace \
