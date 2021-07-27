@@ -67,7 +67,7 @@ run() {
   cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices "${GAS_PRICE}" "${ADDITIONAL_ARGS}"
 }
 
-if [ -z "${UPGRADE_NODE}" ]; then
+if [ -z "${UPGRADE_NODE}" ] && [ "${UPGRADE_NODE}" == "true" ]; then
   upgrade
 fi
 
