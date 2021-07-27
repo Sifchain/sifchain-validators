@@ -61,7 +61,7 @@ run() {
   elif [ -n "${TIMESTAMP}" ]; then
     echo "${TIMESTAMP}" > "${HOME}"/.sifnoded/.timestamp
 
-    ADDITIONAL_ARGS="--halt-time ${TIMESTAMP}"
+    ADDITIONAL_ARGS="--halt-time=${TIMESTAMP}"
   fi
 
   cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices "${GAS_PRICE}" "${ADDITIONAL_ARGS}"
