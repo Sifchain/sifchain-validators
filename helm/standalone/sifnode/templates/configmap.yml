@@ -130,6 +130,50 @@ data:
     chmod +x /usr/local/bin/migrate.sh
     /usr/local/bin/migrate.sh -b ${INITIAL_HEIGHT} -c ${CHAINNET} -s ${COSMOS_SDK_VERSION} -t ${GENESIS_TIME} -v ${VERSION} -w ${CURRENT_VERSION} -z ${DATA_MIGRATE_VERSION}
 
+  restore.sh: |
+    #!/bin/sh
+    #
+    # ./restore.sh
+    #
+
+    if [ ! -d "${HOME}"/.sifnoded/backups/"${BACKUP}" ]; then
+      exit 1
+    fi
+
+    rm -rf "${HOME}"/.sifnoded/restore/"${BACKUP}"
+    mkdir -p "${HOME}"/.sifnoded/restore/"${BACKUP}"
+
+    mv "${HOME}"/.sifnoded/config "${HOME}"/.sifnoded/restore/"${BACKUP}"
+    mv "${HOME}"/.sifnoded/data "${HOME}"/.sifnoded/restore/"${BACKUP}"
+
+    cp -avr "${HOME}"/.sifnoded/backups/"${BACKUP}"/data "${HOME}"/.sifnoded/
+    cp -avr "${HOME}"/.sifnoded/backups/"${BACKUP}"/config "${HOME}"/.sifnoded/
+
+    if [ ! -d "${HOME}"/.sifnoded/cosmovisor/upgrades/"${CURRENT_VERSION}" ]; then
+      mkdir -p "${HOME}"/.sifnoded/cosmovisor/upgrades/"${CURRENT_VERSION}"/bin
+      cd "${HOME}"/.sifnoded/cosmovisor/upgrades/"${CURRENT_VERSION}"/bin
+
+      case $CHAINNET in
+        *"devnet"*)
+          PREFIX="devnet"
+          ;;
+        *"testnet"*)
+          PREFIX="testnet"
+          ;;
+        *)
+          PREFIX="mainnet"
+          ;;
+      esac
+
+      wget -O sifnoded.zip https://github.com/Sifchain/sifnode/releases/download/"${PREFIX}"-"${CURRENT_VERSION}"/sifnoded-"${PREFIX}"-"${CURRENT_VERSION}"-linux-amd64.zip
+      unzip sifnoded.zip
+    fi
+
+    rm -f "${HOME}"/.sifnoded/.timestamp
+    rm -f "${HOME}"/.sifnoded/.upgraded
+    rm "${HOME}"/.sifnoded/cosmovisor/current
+    ln -s "${HOME}"/.sifnoded/cosmovisor/upgrades/"${CURRENT_VERSION}" "${HOME}"/.sifnoded/cosmovisor/current
+
   start.sh: |
     #!/bin/sh
     #

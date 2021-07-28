@@ -23,15 +23,17 @@ image:
 sifnode:
   upgrade:
     initialHeight: "1000"
-    chainnet: "sifchain-testnet-042"
+    chainnet: "sifchain-testnet-1"
     cosmosSDKVersion: "0.40"
     genesisTime: "2021-07-01T00:00:00Z"
-    version: "0.9.0-rc.7"
+    version: "0.9.0"
     currentVersion: "0.8.8"
     dataMigrateVersion: "0.9"
     timestamp:
+    backup:
   args:
     upgradeNode: false
+    restoreNode: false
     createBackup: false
     bucket:
     mnemonic: ""
