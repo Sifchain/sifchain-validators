@@ -5,199 +5,199 @@ metadata:
   labels:
     {{- include "sifnode.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-replicas: {{ .Values.replicaCount }}
-  {{- end }}
-strategy:
-  type: {{ .Values.strategyType }}
-selector:
-  matchLabels:
-    {{- include "sifnode.selectorLabels" . | nindent 6 }}
-template:
-  metadata:
-  {{- with .Values.podAnnotations }}
-  annotations:
-    {{- toYaml . | nindent 8 }}
-  {{- end }}
-  labels:
-    {{- include "sifnode.selectorLabels" . | nindent 8 }}
-  spec:
-    serviceAccountName: {{ include "sifnode.serviceAccountName" . }}
-    securityContext:
-      {{- toYaml .Values.podSecurityContext | nindent 8 }}
-    initContainers:
-      {{- if .Values.sifnode.args.createBackup }}
-      - name: backup
-        image: mlungwsr/ubuntu-awscli
-        command: ["/scripts/backup.sh"]
-        volumeMounts:
-          - name: scripts
-            mountPath: /scripts
-          - name: data
-            mountPath: /root
-        env:
-          - name: CHAINNET
-            value: {{ .Values.sifnode.env.chainnet }}
-          - name: BUCKET
-            value: {{ .Values.sifnode.args.bucket }}
-      {{- end }}
-      - name: external-ip
-        image: alpine/k8s:1.18.2
-        command: ["/scripts/external-ip.sh", "sifnode", "$MONIKER", '{{ include "sifnode.fullname" . }}-external-ip']
-        volumeMounts:
-          - name: scripts
-            mountPath: /scripts
-        env:
-          - name: MONIKER
-            value: {{ .Values.sifnode.env.moniker }}
-      - name: setup
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/sh"]
-        {{- if .Values.sifnode.args.peerAddress }}
-        args: ["-c", "sifgen node create $CHAINNET $MONIKER \"{{ .Values.sifnode.args.mnemonic }}\" --bind-ip-address $EXTERNAL_IP --peer-address {{ .Values.sifnode.args.peerAddress }} --genesis-url {{ .Values.sifnode.args.genesisURL }} --with-cosmovisor"]
-        {{- else }}
-        args: ["-c", "sifgen node create $CHAINNET $MONIKER \"{{ .Values.sifnode.args.mnemonic }}\" --mint-amount {{ .Values.sifnode.args.mintAmount }} --bond-amount {{ .Values.sifnode.args.bondAmount }} --admin-clp-addresses \"{{ .Values.sifnode.args.adminCLPAddresses }}\" --admin-oracle-address {{ .Values.sifnode.args.adminOracleAddress }} --bind-ip-address $EXTERNAL_IP --gov-max-deposit-period {{ .Values.sifnode.args.govMaxDepositPeriod }} --gov-voting-period {{ .Values.sifnode.args.govVotingPeriod }} --standalone --with-cosmovisor"]
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  strategy:
+    type: {{ .Values.strategyType }}
+  selector:
+    matchLabels:
+      {{- include "sifnode.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "sifnode.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "sifnode.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        {{- if .Values.sifnode.args.createBackup }}
+        - name: backup
+          image: mlungwsr/ubuntu-awscli
+          command: ["/scripts/backup.sh"]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: data
+              mountPath: /root
+          env:
+            - name: CHAINNET
+              value: {{ .Values.sifnode.env.chainnet }}
+            - name: BUCKET
+              value: {{ .Values.sifnode.args.bucket }}
         {{- end }}
-        volumeMounts:
-          - name: data
-            mountPath: /root
-        env:
-          - name: CHAINNET
-            value: {{ .Values.sifnode.env.chainnet }}
-          - name: MONIKER
-            value: {{ .Values.sifnode.env.moniker }}
-          - name: EXTERNAL_IP
-            valueFrom:
-              configMapKeyRef:
-                name: {{ include "sifnode.fullname" . }}-external-ip
-                key: externalIP
-      {{- if .Values.sifnode.args.state.importURL }}
-      - name: import
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/sh"]
-        args: ["-c", "/scripts/import.sh {{ .Values.sifnode.args.state.importURL }}"]
-        volumeMounts:
-          - name: data
-            mountPath: /root
-          - name: scripts
-            mountPath: /scripts
-      {{- end }}
-      {{- if .Values.sifnode.args.upgradeNode }}
-      - name: upgrade
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/sh"]
-        args: ["-c", "/scripts/upgrade.sh"]
-        volumeMounts:
-          - name: data
-            mountPath: /root
-          - name: scripts
-            mountPath: /scripts
-        env:
-          - name: INITIAL_HEIGHT
-            value: "{{ .Values.sifnode.upgrade.initialHeight }}"
-          - name: CHAINNET
-            value: {{ .Values.sifnode.upgrade.chainnet }}
-          - name: COSMOS_SDK_VERSION
-            value: "{{ .Values.sifnode.upgrade.cosmosSDKVersion }}"
-          - name: GENESIS_TIME
-            value: {{ .Values.sifnode.upgrade.genesisTime }}
-          - name: VERSION
-            value: {{ .Values.sifnode.upgrade.version }}
-          - name: CURRENT_VERSION
-            value: "{{ .Values.sifnode.upgrade.currentVersion }}"
-          - name: DATA_MIGRATE_VERSION
-            value: "{{ .Values.sifnode.upgrade.dataMigrateVersion }}"
-      {{- end }}
-      {{- if .Values.sifnode.args.restoreNode }}
-      - name: restore
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/sh"]
-        args: ["-c", "/scripts/restore.sh"]
-        volumeMounts:
-          - name: data
-            mountPath: /root
-          - name: scripts
-            mountPath: /scripts
-        env:
-          - name: CHAINNET
-            value: {{ .Values.sifnode.env.chainnet }}
-          - name: CURRENT_VERSION
-            value: "{{ .Values.sifnode.upgrade.currentVersion }}"
-          - name: BACKUP
-            value: "{{ .Values.sifnode.upgrade.backup }}"
-      {{- end }}
-    containers:
-      - name: {{ .Chart.Name }}
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/sh"]
-        args: ["-c", "/scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\""]
-        volumeMounts:
-          - name: data
-            mountPath: /root
-          - name: scripts
-            mountPath: /scripts
-        ports:
-          - name: p2p
-            containerPort: 26656
-            protocol: TCP
-          - name: rpc
-            containerPort: 26657
-            protocol: TCP
-        env:
-          - name: DAEMON_HOME
-            value: {{ .Values.sifnode.env.daemonHome }}
-          - name: DAEMON_NAME
-            value: {{ .Values.sifnode.env.daemonName }}
-          - name: DAEMON_ALLOW_DOWNLOAD_BINARIES
-            value: "{{ .Values.sifnode.env.daemonAllowDownloadBinaries }}"
-          - name: DAEMON_RESTART_AFTER_UPGRADE
-            value: "{{ .Values.sifnode.env.daemonRestartAfterUpgrade }}"
-          - name: TIMESTAMP
-            value: "{{ .Values.sifnode.upgrade.timestamp }}"
-        livenessProbe:
-          tcpSocket:
-            port: 26657
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          tcpSocket:
-            port: 26657
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        resources:
-          {{- toYaml .Values.resources | nindent 12 }}
-    volumes:
+        - name: external-ip
+          image: alpine/k8s:1.18.2
+          command: ["/scripts/external-ip.sh", "sifnode", "$MONIKER", '{{ include "sifnode.fullname" . }}-external-ip']
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          env:
+            - name: MONIKER
+              value: {{ .Values.sifnode.env.moniker }}
+        - name: setup
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          {{- if .Values.sifnode.args.peerAddress }}
+          args: ["-c", "sifgen node create $CHAINNET $MONIKER \"{{ .Values.sifnode.args.mnemonic }}\" --bind-ip-address $EXTERNAL_IP --peer-address {{ .Values.sifnode.args.peerAddress }} --genesis-url {{ .Values.sifnode.args.genesisURL }} --with-cosmovisor"]
+          {{- else }}
+          args: ["-c", "sifgen node create $CHAINNET $MONIKER \"{{ .Values.sifnode.args.mnemonic }}\" --mint-amount {{ .Values.sifnode.args.mintAmount }} --bond-amount {{ .Values.sifnode.args.bondAmount }} --admin-clp-addresses \"{{ .Values.sifnode.args.adminCLPAddresses }}\" --admin-oracle-address {{ .Values.sifnode.args.adminOracleAddress }} --bind-ip-address $EXTERNAL_IP --gov-max-deposit-period {{ .Values.sifnode.args.govMaxDepositPeriod }} --gov-voting-period {{ .Values.sifnode.args.govVotingPeriod }} --standalone --with-cosmovisor"]
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /root
+          env:
+            - name: CHAINNET
+              value: {{ .Values.sifnode.env.chainnet }}
+            - name: MONIKER
+              value: {{ .Values.sifnode.env.moniker }}
+            - name: EXTERNAL_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "sifnode.fullname" . }}-external-ip
+                  key: externalIP
+        {{- if .Values.sifnode.args.state.importURL }}
+        - name: import
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/import.sh {{ .Values.sifnode.args.state.importURL }}"]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+        {{- end }}
+        {{- if .Values.sifnode.args.upgradeNode }}
+        - name: upgrade
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/upgrade.sh"]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+          env:
+            - name: INITIAL_HEIGHT
+              value: "{{ .Values.sifnode.upgrade.initialHeight }}"
+            - name: CHAINNET
+              value: {{ .Values.sifnode.upgrade.chainnet }}
+            - name: COSMOS_SDK_VERSION
+              value: "{{ .Values.sifnode.upgrade.cosmosSDKVersion }}"
+            - name: GENESIS_TIME
+              value: {{ .Values.sifnode.upgrade.genesisTime }}
+            - name: VERSION
+              value: {{ .Values.sifnode.upgrade.version }}
+            - name: CURRENT_VERSION
+              value: "{{ .Values.sifnode.upgrade.currentVersion }}"
+            - name: DATA_MIGRATE_VERSION
+              value: "{{ .Values.sifnode.upgrade.dataMigrateVersion }}"
+        {{- end }}
+        {{- if .Values.sifnode.args.restoreNode }}
+        - name: restore
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/restore.sh"]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+          env:
+            - name: CHAINNET
+              value: {{ .Values.sifnode.env.chainnet }}
+            - name: CURRENT_VERSION
+              value: "{{ .Values.sifnode.upgrade.currentVersion }}"
+            - name: BACKUP
+              value: "{{ .Values.sifnode.upgrade.backup }}"
+        {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\""]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+          ports:
+            - name: p2p
+              containerPort: 26656
+              protocol: TCP
+            - name: rpc
+              containerPort: 26657
+              protocol: TCP
+          env:
+            - name: DAEMON_HOME
+              value: {{ .Values.sifnode.env.daemonHome }}
+            - name: DAEMON_NAME
+              value: {{ .Values.sifnode.env.daemonName }}
+            - name: DAEMON_ALLOW_DOWNLOAD_BINARIES
+              value: "{{ .Values.sifnode.env.daemonAllowDownloadBinaries }}"
+            - name: DAEMON_RESTART_AFTER_UPGRADE
+              value: "{{ .Values.sifnode.env.daemonRestartAfterUpgrade }}"
+            - name: TIMESTAMP
+              value: "{{ .Values.sifnode.upgrade.timestamp }}"
+          livenessProbe:
+            tcpSocket:
+              port: 26657
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 26657
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
       - name: data
-    {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
-    persistentVolumeClaim:
-      claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sifnode.fullname" . }}{{- end }}
-    {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
-    hostPath:
-      path: {{ .Values.persistence.hostPath }}
-      type: DirectoryOrCreate
-    {{- else }}
-    emptyDir: {}
-    {{- end }}
-    - name: scripts
-      configMap:
-        name: {{ include "sifnode.fullname" . }}-scripts
-        defaultMode: 0777
-    {{- with .Values.nodeSelector }}
-    nodeSelector:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-    affinity:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-    tolerations:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sifnode.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "sifnode.fullname" . }}-scripts
+          defaultMode: 0777
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
