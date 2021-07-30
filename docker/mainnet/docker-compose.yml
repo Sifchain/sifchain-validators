@@ -18,14 +18,6 @@ services:
       DAEMON_HOME: /root/.sifnoded
       DAEMON_ALLOW_DOWNLOAD_BINARIES: "true"
       DAEMON_RESTART_AFTER_UPGRADE: "true"
-      TIMESTAMP: ${TIMESTAMP}
-      UPGRADE_NODE: ${UPGRADE_NODE}
-      INITIAL_HEIGHT: ${INITIAL_HEIGHT}
-      COSMOS_SDK_VERSION: ${COSMOS_SDK_VERSION}
-      GENESIS_TIME: ${GENESIS_TIME}
-      VERSION: ${VERSION}
-      CURRENT_VERSION: ${CURRENT_VERSION}
-      DATA_MIGRATE_VERSION: ${DATA_MIGRATE_VERSION}
     volumes:
       - .:/root:Z
       - ../scripts:/root/scripts:Z
