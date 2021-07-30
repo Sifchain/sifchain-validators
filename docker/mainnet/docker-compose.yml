@@ -2,7 +2,7 @@ version: '3'
 
 services:
   sifnode:
-    image: sifchain/sifnoded:mainnet-genesis
+    image: sifchain/sifnoded:mainnet-0.9.0
     ports:
       - 26656:26656
       - 26657:26657
