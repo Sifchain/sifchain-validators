@@ -20,9 +20,11 @@ namespace :validator do
             --gas-prices=#{args[:gas_prices]} \
             --moniker=#{args[:moniker]} \
             --from=#{args[:moniker]} \
-            --keyring-backend=file \
+            --keyring-backend=test \
             --node=#{node}
     }
+
+    puts cmd
 
     system(cmd)
   end
