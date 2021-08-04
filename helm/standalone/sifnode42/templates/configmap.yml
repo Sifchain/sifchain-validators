@@ -34,8 +34,10 @@ data:
   start.sh: |
     #!/bin/sh
     #
-    # ./start.sh <minimum_gas_prices>
+    # ./start.sh <minimum_gas_prices> <additional_args>
     #
 
     MINIMUM_GAS_PRICES=$1
-    cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices ${MINIMUM_GAS_PRICES} --x-crisis-skip-assert-invariants
+    ADDITIONAl_ARGS=$2
+
+    cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices ${MINIMUM_GAS_PRICES} --x-crisis-skip-assert-invariants ${ADDITIONAl_ARGS}

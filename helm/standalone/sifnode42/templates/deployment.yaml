@@ -64,7 +64,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "/scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\""]
+          args: ["-c", "/scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\" \"{{ .Values.sifnode.args.additionalArgs }}\""]
           volumeMounts:
             - name: data
               mountPath: /root
