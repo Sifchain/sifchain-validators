@@ -1,6 +1,8 @@
 replicaCount: 1
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: regcredd
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -66,9 +68,9 @@ ingress:
 resources:
   requests:
     cpu: 1
-    memory: 2Gi
-  limits:
     memory: 4Gi
+  limits:
+    memory: 8Gi
 
 autoscaling:
   enabled: false

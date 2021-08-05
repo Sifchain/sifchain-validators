@@ -64,7 +64,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && -=hotfix_command=- /scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\" \"{{ .Values.sifnode.args.additionalArgs }}\""]
+          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && -=hotfix_command=- /scripts/start.sh \"${minimumGasPrices}\" \"${additionalArgs}\""]
           volumeMounts:
             - name: data
               mountPath: /root

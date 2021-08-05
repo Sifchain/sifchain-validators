@@ -399,6 +399,9 @@ data:
             "readGenesis": true
         },
         "params":{
+            "validatorUpdateWindow": 300,
+            "transactionsInterval": 5000,
+            "keybaseFetchingInterval": 18000000,
             "startHeight": {{ .Values.blockExplorer.args.startHeight }},
             "defaultBlockTime": 5000,
             "blockInterval": 15000,

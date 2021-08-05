@@ -196,7 +196,7 @@ datadog:
   apm:
     # datadog.apm.enabled -- Enable this to enable APM and tracing, on port 8126
     ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
-    enabled: false
+    enabled: true
 
     # datadog.apm.port -- Override the trace Agent port
     ## Note: Make sure your client is sending to the same UDP port.

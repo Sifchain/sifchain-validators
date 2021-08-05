@@ -80,7 +80,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "while [ ! -f /vault/secrets/sifnode ]; do sleep 1; done && source /vault/secrets/sifnode && /scripts/start.sh \"${minimumGasPrices}\""]
+          args: ["-c", "while [ ! -f /vault/secrets/sifnode ]; do sleep 1; done && source /vault/secrets/sifnode && /scripts/start.sh \"${minimumGasPrices}\" \"${additionalArgs}\""]
           volumeMounts:
             - name: data
               mountPath: /root
