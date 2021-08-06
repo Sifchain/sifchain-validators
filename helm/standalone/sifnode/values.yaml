@@ -1,6 +1,7 @@
 replicaCount: 1
 
 imagePullSecrets: []
+
 nameOverride: ""
 fullnameOverride: ""
 
@@ -17,44 +18,29 @@ securityContext: {}
 
 image:
   repository: sifchain/sifnoded
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   tag: "testnet"
 
 sifnode:
-  upgrade:
-    initialHeight: "1000"
-    chainnet: "sifchain-testnet-1"
-    cosmosSDKVersion: "0.40"
-    genesisTime: "2021-07-01T00:00:00Z"
-    version: "0.9.0"
-    currentVersion: "0.8.8"
-    dataMigrateVersion: "0.9"
-    timestamp:
-    backup:
   args:
-    upgradeNode: false
-    restoreNode: false
-    createBackup: false
-    bucket:
     mnemonic: ""
     genesisURL:
     mintAmount: "999999000000000000000000000rowan"
     bondAmount: "1000000000000000000000rowan"
     peerAddress:
     adminCLPAddresses: ""
-    enableExternalRpc: false
-    enableRpc: false
     adminOracleAddress: ""
+    enableRpc: false
+    enableExternalRpc: false
     minimumGasPrices: "0.5rowan"
     govMaxDepositPeriod: "10800000000000"
     govVotingPeriod: "10800000000000"
-    state:
-      importURL:
+    additionalArgs: ""
   env:
     daemonHome: "/root/.sifnoded"
     daemonName: "sifnoded"
     daemonAllowDownloadBinaries: true
-    daemonRestartAfterUpgrade: false
+    daemonRestartAfterUpgrade: true
     chainnet:
     moniker:
 

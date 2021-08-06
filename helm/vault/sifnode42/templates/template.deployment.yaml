@@ -46,7 +46,7 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /root/
+              mountPath: /root
           env:
             - name: CHAINNET
               value: {{ .Values.sifnode.env.chainnet }}
@@ -64,10 +64,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && -=hotfix_command=- cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices \"${minimumGasPrices}\" --log_format json"]
+          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && -=hotfix_command=- /scripts/start.sh \"${minimumGasPrices}\" \"${additionalArgs}\""]
           volumeMounts:
             - name: data
-              mountPath: /root/
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
           ports:
             {{- if .Values.sifnode.args.enableAPI }}
             - name: api

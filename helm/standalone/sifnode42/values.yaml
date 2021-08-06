@@ -1,6 +1,8 @@
 replicaCount: 1
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: regcredd
+
 nameOverride: ""
 fullnameOverride: ""
 

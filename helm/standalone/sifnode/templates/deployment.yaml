@@ -26,23 +26,9 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
-        {{- if .Values.sifnode.args.createBackup }}
-        - name: backup
-          image: mlungwsr/ubuntu-awscli
-          command: ["/scripts/backup.sh"]
-          volumeMounts:
-            - name: scripts
-              mountPath: /scripts
-            - name: data
-              mountPath: /root
-          env:
-            - name: CHAINNET
-              value: {{ .Values.sifnode.env.chainnet }}
-            - name: BUCKET
-              value: {{ .Values.sifnode.args.bucket }}
-        {{- end }}
         - name: external-ip
           image: alpine/k8s:1.18.2
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/scripts/external-ip.sh", "sifnode", "$MONIKER", '{{ include "sifnode.fullname" . }}-external-ip']
           volumeMounts:
             - name: scripts
@@ -72,64 +58,6 @@ spec:
                 configMapKeyRef:
                   name: {{ include "sifnode.fullname" . }}-external-ip
                   key: externalIP
-        {{- if .Values.sifnode.args.state.importURL }}
-        - name: import
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/sh"]
-          args: ["-c", "/scripts/import.sh {{ .Values.sifnode.args.state.importURL }}"]
-          volumeMounts:
-            - name: data
-              mountPath: /root
-            - name: scripts
-              mountPath: /scripts
-        {{- end }}
-        {{- if .Values.sifnode.args.upgradeNode }}
-        - name: upgrade
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/sh"]
-          args: ["-c", "/scripts/upgrade.sh"]
-          volumeMounts:
-            - name: data
-              mountPath: /root
-            - name: scripts
-              mountPath: /scripts
-          env:
-            - name: INITIAL_HEIGHT
-              value: "{{ .Values.sifnode.upgrade.initialHeight }}"
-            - name: CHAINNET
-              value: {{ .Values.sifnode.upgrade.chainnet }}
-            - name: COSMOS_SDK_VERSION
-              value: "{{ .Values.sifnode.upgrade.cosmosSDKVersion }}"
-            - name: GENESIS_TIME
-              value: {{ .Values.sifnode.upgrade.genesisTime }}
-            - name: VERSION
-              value: {{ .Values.sifnode.upgrade.version }}
-            - name: CURRENT_VERSION
-              value: "{{ .Values.sifnode.upgrade.currentVersion }}"
-            - name: DATA_MIGRATE_VERSION
-              value: "{{ .Values.sifnode.upgrade.dataMigrateVersion }}"
-        {{- end }}
-        {{- if .Values.sifnode.args.restoreNode }}
-        - name: restore
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/sh"]
-          args: ["-c", "/scripts/restore.sh"]
-          volumeMounts:
-            - name: data
-              mountPath: /root
-            - name: scripts
-              mountPath: /scripts
-          env:
-            - name: CHAINNET
-              value: {{ .Values.sifnode.env.chainnet }}
-            - name: CURRENT_VERSION
-              value: "{{ .Values.sifnode.upgrade.currentVersion }}"
-            - name: BACKUP
-              value: "{{ .Values.sifnode.upgrade.backup }}"
-        {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -137,7 +65,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "/scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\""]
+          args: ["-c", "/scripts/start.sh \"{{ .Values.sifnode.args.minimumGasPrices }}\" \"{{ .Values.sifnode.args.additionalArgs }}\""]
           volumeMounts:
             - name: data
               mountPath: /root
@@ -159,8 +87,6 @@ spec:
               value: "{{ .Values.sifnode.env.daemonAllowDownloadBinaries }}"
             - name: DAEMON_RESTART_AFTER_UPGRADE
               value: "{{ .Values.sifnode.env.daemonRestartAfterUpgrade }}"
-            - name: TIMESTAMP
-              value: "{{ .Values.sifnode.upgrade.timestamp }}"
           livenessProbe:
             tcpSocket:
               port: 26657

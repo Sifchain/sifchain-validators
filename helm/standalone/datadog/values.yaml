@@ -196,7 +196,7 @@ datadog:
   apm:
     # datadog.apm.enabled -- Enable this to enable APM and tracing, on port 8126
     ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
-    enabled: false
+    enabled: true
 
     # datadog.apm.port -- Override the trace Agent port
     ## Note: Make sure your client is sending to the same UDP port.
@@ -223,7 +223,10 @@ datadog:
   # datadog.env -- Set environment variables for all Agents
   ## The Datadog Agent supports many environment variables.
   ## ref: https://docs.datadoghq.com/agent/docker/?tab=standard#environment-variables
-  env: []
+  env:
+    - name: DD_CONTAINER_EXCLUDE_LOGS
+      value: "image:sifchain/block-explorer image:sifchain/gaiad image:bitnami/mongodb image:strimzi/kafka image:sifchain/ts-relayer"
+
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
