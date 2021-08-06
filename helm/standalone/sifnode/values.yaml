@@ -40,7 +40,7 @@ sifnode:
     daemonHome: "/root/.sifnoded"
     daemonName: "sifnoded"
     daemonAllowDownloadBinaries: true
-    daemonRestartAfterUpgrade: false
+    daemonRestartAfterUpgrade: true
     chainnet:
     moniker:
 

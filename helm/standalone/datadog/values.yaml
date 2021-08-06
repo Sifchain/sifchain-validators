@@ -223,7 +223,10 @@ datadog:
   # datadog.env -- Set environment variables for all Agents
   ## The Datadog Agent supports many environment variables.
   ## ref: https://docs.datadoghq.com/agent/docker/?tab=standard#environment-variables
-  env: []
+  env:
+    - name: DD_CONTAINER_EXCLUDE_LOGS
+      value: "image:sifchain/block-explorer image:sifchain/gaiad image:bitnami/mongodb image:strimzi/kafka image:sifchain/ts-relayer"
+
   #   - name: <ENV_VAR_NAME>
   #     value: <ENV_VAR_VALUE>
 
