@@ -7,10 +7,10 @@ services:
       - 26656:26656
       - 26657:26657
     environment:
-      CHAINNET: sifchain-testnet
+      CHAINNET: sifchain-testnet-1
       MONIKER: ${MONIKER}
       MNEMONIC: ${MNEMONIC}
-      PEER_ADDRESSES: 739e51ab0dacb68dbfef52dab4aefadbdc357202@18.118.233.146:26656
+      PEER_ADDRESSES: 19c3ae9ec4a0e68735042241f4e208f79d63c2bc@3.143.145.97:26656
       GENESIS_URL: https://rpc-testnet.sifchain.finance/genesis
       GAS_PRICE: ${GAS_PRICE}
       BIND_IP_ADDRESS: ${BIND_IP_ADDRESS}
