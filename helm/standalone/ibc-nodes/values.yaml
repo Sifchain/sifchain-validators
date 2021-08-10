@@ -1,0 +1,78 @@
+replicaCount: 1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+image:
+  repository: sifchain/cosmovisor
+  pullPolicy: Always
+  tag: latest
+
+ibcNode:
+  args:
+    enableRpc: false
+    enableExternalRpc: false
+    p2p:
+      seeds:
+  env:
+    moniker:
+    chainnet:
+    genesisUrl:
+    configUrl:
+    seeds:
+    persistentPeers:
+    binaryName:
+    homeFolder:
+    minimumGasPrices: ""
+    daemonAllowDownloadBinaries: true
+    daemonRestartAfterUpgrade: true
+
+service:
+  type: LoadBalancer
+  port: 26656
+
+persistence:
+  enabled: true
+  size: 750Gi
+  accessMode: ReadWriteOnce
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: ibcNode.local
+      paths: []
+  tls: []
+
+resources:
+  requests:
+    cpu: 2
+    memory: 8Gi
+  limits:
+    memory: 16Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+strategyType: Recreate
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

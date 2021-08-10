@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ibcNode.fullname" . }}-scripts
+data:
+  external-ip.sh: |
+    #!/bin/bash
+    #
+    # ./external-ip.sh <service> <namespace> <config_map>
+    #
+
+    apk add bind-tools
+
+    SERVICE=$1
+    NAMESPACE=$2
+    CONFIGMAP=$3
+
+    external_ip=""
+
+    kubectl annotate svc $SERVICE service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=false --overwrite
+    sleep 5
+    kubectl annotate svc $SERVICE service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled=true --overwrite
+
+    while [ -z $external_ip ]; do
+      echo "Waiting for load balancer external endpoint..."
+      external_ip=$(kubectl get svc $SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+      if [ -z $external_ip ]; then
+        hostname=$(kubectl get svc $SERVICE -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+        [ ! -z $hostname ] && external_ip=$(dig +short $hostname | sort | head -1)
+      fi
+      [ -z $external_ip ] && sleep 10
+    done
+
+    kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
+
+  setup.sh: |
+    #!/bin/sh
+    #
+    # ./setup.sh
+    #
+
+    #
+    # Initialize.
+    #
+    initialize() {
+      "${BINARY_NAME}" init "${MONIKER}"
+    }
+
+    #
+    # Install genesis.
+    #
+    install_genesis() {
+      rm -f "${HOME}"/"${HOME_FOLDER}"/config/genesis.json
+      wget -O "${HOME}"/"${HOME_FOLDER}"/config/genesis.json.gz "${GENESIS_URL}"
+      gunzip "${HOME}"/"${HOME_FOLDER}"/config/genesis.json.gz
+    }
+
+    #
+    # Install config.
+    #
+    install_config() {
+      if [ -n "${CONFIG_URL}" ]; then
+        rm -f "${HOME}"/"${HOME_FOLDER}"/config/config.toml
+        wget -O "${HOME}"/"${HOME_FOLDER}"/config/config.toml "${CONFIG_URL}"
+      fi
+    }
+
+    #
+    # Set seeds.
+    #
+    set_seeds() {
+      if [ -z "${SEEDS}" ]; then
+        return
+      fi
+
+      sed -i "s/seeds =.*/seeds = \"$(echo -n "${SEEDS}" | base64 -d)\"/g" "${HOME}"/"${HOME_FOLDER}"/config/config.toml
+    }
+
+    #
+    # Set the persistent peers.
+    #
+    set_persistent_peers() {
+      if [ -z "${PERSISTENT_PEERS}" ]; then
+        return
+      fi
+
+      sed -i "s/persistent_peers =.*/persistent_peers = \"$(echo -n "${PERSISTENT_PEERS}" | base64 -d)\"/g" "${HOME}"/"${HOME_FOLDER}"/config/config.toml
+    }
+
+    #
+    # Set minimum gas prices.
+    #
+    set_minimum_gas_prices() {
+      if [ -z "${MINIMUM_GAS_PRICES}" ]; then
+        return
+      fi
+
+      sed -i "s/minimum-gas-prices =.*/minimum-gas-prices = \"${MINIMUM_GAS_PRICES}\"/g" "${HOME}"/"${HOME_FOLDER}"/config/app.toml
+    }
+
+    #
+    # Set external address.
+    #
+    set_external_address() {
+      sed -i -e "s/external_address = \"\"/external_address = \"${EXTERNAL_IP}:26656\"/g" "${HOME}"/"${HOME_FOLDER}"/config/config.toml
+    }
+
+    #
+    # Set log level.
+    #
+    set_log_level() {
+      sed -ri 's/log_level.*/log_level = \"error\"/g' "${HOME}"/"${HOME_FOLDER}"/config/config.toml
+    }
+
+    #
+    # Setup cosmovisor.
+    #
+    setup_cosmovisor() {
+      mkdir -p "${HOME}"/"${HOME_FOLDER}"/cosmovisor/genesis/bin
+      mkdir "${HOME}"/"${HOME_FOLDER}"/cosmovisor/upgrades
+      cp /usr/bin/"${BINARY_NAME}" "${HOME}"/"${HOME_FOLDER}"/cosmovisor/genesis/bin
+    }
+
+    # Has setup already been run?
+    if [ -f "${HOME}"/"${HOME_FOLDER}"/config/genesis.json ]; then
+      exit 0
+    fi
+
+    initialize
+    install_genesis
+    install_config
+    set_seeds
+    set_persistent_peers
+    set_minimum_gas_prices
+    set_external_address
+    set_log_level
+    setup_cosmovisor
+
+  start.sh: |
+    #!/bin/sh
+    #
+    # ./start.sh <minimum_gas_prices>
+    #
+    MINIMUM_GAS_PRICES=$1
+    cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 \
+    --minimum-gas-prices ${MINIMUM_GAS_PRICES} \
+    --pruning custom \
+    --pruning-keep-recent 362880 \
+    --pruning-keep-every 0 \
+    --pruning-interval 100 \
+    --x-crisis-skip-assert-invariants
