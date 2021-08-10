@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ibcNode.fullname" . }}
+  labels:
+    {{- include "ibcNode.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  strategy:
+    type: {{ .Values.strategyType }}
+  selector:
+    matchLabels:
+      {{- include "ibcNode.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        {{- include "ibcNode.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "ibcNode.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: external-ip
+          image: alpine/k8s:1.18.2
+          command: ["/scripts/external-ip.sh", '{{ include "ibcNode.fullname" . }}', "$MONIKER", '{{ include "ibcNode.fullname" . }}-external-ip']
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          env:
+            - name: MONIKER
+              value: {{ .Values.ibcNode.env.moniker }}
+        - name: setup
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/scripts/setup.sh"]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: data
+              mountPath: /root
+          env:
+            - name: CHAINNET
+              value: {{ .Values.ibcNode.env.chainnet }}
+            - name: MONIKER
+              value: {{ .Values.ibcNode.env.moniker }}
+            - name: GENESIS_URL
+              value: {{ .Values.ibcNode.env.genesisUrl }}
+            - name: CONFIG_URL
+              value: {{ .Values.ibcNode.env.configUrl }}
+            - name: SEEDS
+              value: {{ .Values.ibcNode.env.seeds }}
+            - name: PERSISTENT_PEERS
+              value: {{ .Values.ibcNode.env.persistentPeers }}
+            - name: BINARY_NAME
+              value: {{ .Values.ibcNode.env.binaryName }}
+            - name: HOME_FOLDER
+              value: {{ .Values.ibcNode.env.homeFolder }}
+            - name: MINIMUM_GAS_PRICES
+              value: {{ .Values.ibcNode.env.minimumGasPrices }}
+            - name: EXTERNAL_IP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "ibcNode.fullname" . }}-external-ip
+                  key: externalIP
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/start.sh \"{{ .Values.ibcNode.env.minimumGasPrices }}\""]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+          ports:
+            - name: p2p
+              containerPort: 26656
+              protocol: TCP
+            - name: rpc
+              containerPort: 26657
+              protocol: TCP
+          env:
+            - name: DAEMON_HOME
+              value: "/root/{{ .Values.ibcNode.env.homeFolder }}"
+            - name: DAEMON_NAME
+              value: {{ .Values.ibcNode.env.binaryName }}
+            - name: DAEMON_ALLOW_DOWNLOAD_BINARIES
+              value: "{{ .Values.ibcNode.env.daemonAllowDownloadBinaries }}"
+            - name: DAEMON_RESTART_AFTER_UPGRADE
+              value: "{{ .Values.ibcNode.env.daemonRestartAfterUpgrade }}"
+          startupProbe:
+            tcpSocket:
+              port: 26656
+            periodSeconds: 500
+            failureThreshold: 2
+          livenessProbe:
+            tcpSocket:
+              port: 26656
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 26656
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: data
+      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "ibcNode.fullname" . }}{{- end }}
+      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+        hostPath:
+          path: {{ .Values.persistence.hostPath }}
+          type: DirectoryOrCreate
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "ibcNode.fullname" . }}-scripts
+          defaultMode: 0777
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
