@@ -49,7 +49,7 @@ data:
       fi
     fi
 
-    echo "{\"name\":\"${VERSION}\","height":${HEIGHT}}" > "${HOME}"/.sifnoded/data/upgrade-info.json
+    echo "{\"name\":\"${VERSION}\",\"height\":${HEIGHT}}" > "${HOME}"/.sifnoded/data/upgrade-info.json
 
   start.sh: |
     #!/bin/sh
