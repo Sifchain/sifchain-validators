@@ -33,6 +33,24 @@ data:
 
     kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
 
+  fix-upgrade.sh: |
+    #!/bin/sh
+    #
+    # ./fix-upgrade.sh <version> <height>
+    #
+
+    VERSION=$1
+    HEIGHT=$2
+
+    if [ -f "${HOME}"/.sifnoded/data/upgrade-info.json ]; then
+      CURRENT=`jq .name /root/.sifnoded/data/upgrade-info.json`
+      if [ "${CURRENT}" = "${VERSION}" ]; then
+        exit 0
+      fi
+    fi
+
+    echo "{\"name\":\"${VERSION}\","height":${HEIGHT}}" > "${HOME}"/.sifnoded/data/upgrade-info.json
+
   start.sh: |
     #!/bin/sh
     #
