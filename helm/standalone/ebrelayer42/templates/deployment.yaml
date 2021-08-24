@@ -32,10 +32,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "echo \"{{ .Values.ebrelayer.args.mnemonic }}\" | sifnoded keys add $MONIKER --keyring-backend test --recover && ebrelayer init {{ .Values.ebrelayer.args.nodeHost }} {{ .Values.ebrelayer.args.ethWebsocketAddress }} {{ .Values.ebrelayer.args.ethBridgeRegistryAddress }} $MONIKER \"{{ .Values.ebrelayer.args.mnemonic }}\" --from $MONIKER --chain-id $CHAINNET --node {{ .Values.ebrelayer.args.nodeHost }} --gas {{ .Values.ebrelayer.args.gas }} --keyring-backend test"]
+          args: ["-c", "echo \"{{ .Values.ebrelayer.args.mnemonic }}\" | sifnoded keys add $MONIKER --keyring-backend test --recover && ebrelayer init {{ .Values.ebrelayer.args.nodeHost }} {{ .Values.ebrelayer.args.ethWebsocketAddress }} {{ .Values.ebrelayer.args.ethBridgeRegistryAddress }} $MONIKER \"{{ .Values.ebrelayer.args.mnemonic }}\" --from $MONIKER --chain-id $CHAINNET --node {{ .Values.ebrelayer.args.nodeHost }} --gas {{ .Values.ebrelayer.args.gas }} --symbol-translator-file {{ .Values.ebrelayer.env.symbol_translator_file }} --keyring-backend test"]
           volumeMounts:
             - name: data
               mountPath: /relayerdb
+            - name: mappingdata
+              mountPath: {{ .Values.ebrelayer.env.symbol_translator_mountpath }}
           env:
             - name: MONIKER
               value: {{ .Values.ebrelayer.env.moniker }}
@@ -49,6 +51,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+      - name: mappingdata
+        secret:
+          secretName: {{ include "-=app_name=-.fullname" . }}-ibc-mapping
+          defaultMode: 0777
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:

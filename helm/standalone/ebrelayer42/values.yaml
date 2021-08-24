@@ -32,6 +32,10 @@ ebrelayer:
     chainnet: ""
     moniker: ""
     ethPrivateKey: ""
+    symbol_translator_mountpath: /mappingdata/
+    symbol_translator_file: /mappingdata/ibcMapping.json
+    symbol_mapping: ""
+
 
 persistence:
   enabled: true
