@@ -36,6 +36,18 @@ spec:
           env:
             - name: MONIKER
               value: {{ .Values.sifnode.env.moniker }}
+        {{- if.Values.sifnode.args.upgrade.fix }}
+        - name: fix-upgrade
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/fix-upgrade.sh \"{{ .Values.sifnode.args.upgrade.version }}\" {{ .Values.sifnode.args.upgrade.height }}"]
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            - name: scripts
+              mountPath: /scripts
+        {{- end }}
         - name: setup
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -78,6 +90,11 @@ spec:
             - name: rpc
               containerPort: 26657
               protocol: TCP
+            {{- if .Values.sifnode.args.enableAPI }}
+            - name: api
+              containerPort: 1317
+              protocol: TCP
+            {{- end }}
           env:
             - name: DAEMON_HOME
               value: {{ .Values.sifnode.env.daemonHome }}

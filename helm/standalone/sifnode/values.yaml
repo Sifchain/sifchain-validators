@@ -30,12 +30,18 @@ sifnode:
     peerAddress:
     adminCLPAddresses: ""
     adminOracleAddress: ""
+    enableAPI: false
     enableRpc: false
     enableExternalRpc: false
+    enableExternalAPI: false
     minimumGasPrices: "0.5rowan"
     govMaxDepositPeriod: "10800000000000"
     govVotingPeriod: "10800000000000"
     additionalArgs: ""
+    upgrade:
+      fix: false
+      version:
+      height:
   env:
     daemonHome: "/root/.sifnoded"
     daemonName: "sifnoded"
