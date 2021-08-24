@@ -90,6 +90,11 @@ spec:
             - name: rpc
               containerPort: 26657
               protocol: TCP
+            {{- if .Values.sifnode.args.enableAPI }}
+            - name: api
+              containerPort: 1317
+              protocol: TCP
+            {{- end }}
           env:
             - name: DAEMON_HOME
               value: {{ .Values.sifnode.env.daemonHome }}
