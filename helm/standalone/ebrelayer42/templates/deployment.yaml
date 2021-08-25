@@ -53,7 +53,7 @@ spec:
       volumes:
       - name: mappingdata
         secret:
-          secretName: {{ include "-=app_name=-.fullname" . }}-ibc-mapping
+          secretName: {{ include "ebrelayer.fullname" . }}-ibc-mapping
           defaultMode: 0777
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
