@@ -114,3 +114,10 @@ def variable_template_replace(template_file_name, final_file_name)
     end
     File.open(final_file_name, 'w') { |file| file.write(template_file_text) }
 end
+
+#
+# Run task
+#
+def run_task(args, t)
+  ::Sifchain::Chainops::Task.new(task: t, args: args, cwd: cwd).run!
+end
