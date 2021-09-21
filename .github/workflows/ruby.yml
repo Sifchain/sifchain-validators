@@ -1,0 +1,49 @@
+name: Ruby CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    env:
+      RUBY_VERSION: 2.7.3
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          sudo apt update
+          sudo apt install libcurl4-openssl-dev -y
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+
+      - name: Linter
+        run: |
+          make lint
+
+  test:
+    name: test
+    needs: lint
+    runs-on: ubuntu-latest
+    env:
+      RUBY_VERSION: 2.7.3
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |
+          sudo apt update
+          sudo apt install libcurl4-openssl-dev -y
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ env.RUBY_VERSION }}
+          bundler-cache: true
+
+      - name: Tests
+        run: |
+          make tests

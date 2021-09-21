@@ -1,0 +1,2 @@
+src: ${CHAINNET0}
+dest: ${CHAINNET1}
