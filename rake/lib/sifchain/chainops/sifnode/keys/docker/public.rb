@@ -16,7 +16,7 @@ module Sifchain
             private
 
             def container
-              @container ||= "$(#{::Sifchain::Chainops::Cli::DOCKER} container ps | grep #{get_arg :image}:#{get_arg :image_tag} | awk '{ print $1 }')"
+              @container ||= `#{::Sifchain::Chainops::Cli::DOCKER} container ps | grep #{get_arg :image}:#{get_arg :image_tag} | awk '{ print $1 }'`
             end
 
             def key
