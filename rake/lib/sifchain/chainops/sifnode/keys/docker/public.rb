@@ -20,7 +20,7 @@ module Sifchain
             end
 
             def key
-              raise 'container not found' if container.nil?
+              raise 'container not found' if container.nil? || container.empty?
 
               cmd = <<~CMD
                 #{::Sifchain::Chainops::Cli::DOCKER} exec -it #{container} \
