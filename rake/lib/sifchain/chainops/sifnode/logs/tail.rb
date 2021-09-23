@@ -22,7 +22,7 @@ module Sifchain
             raise 'unable to find pod' if pod_name.nil?
 
             cmd = <<~CMD
-              #{::Sifchain::Chainops::Cli::KUBECTL} -n #{get_arg :namespace} logs #{pod_name} --tail #{rows} -f \
+              #{::Sifchain::Chainops::Cli::KUBECTL} -n #{get_arg :namespace} logs #{pod_name} --tail #{get_arg :rows} -f \
                #{Common.kubeconfig(args)}
             CMD
             system cmd, exception: true
