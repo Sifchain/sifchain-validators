@@ -1,10 +1,12 @@
 require_relative "lib/sifchain/chainops/sifnode/bank/send"
 require_relative "lib/sifchain/chainops/sifnode/common"
 require_relative "lib/sifchain/chainops/sifnode/config/backup"
+require_relative "lib/sifchain/chainops/sifnode/keys/docker/public"
 require_relative "lib/sifchain/chainops/sifnode/keys/generate/mnemonic"
+require_relative "lib/sifchain/chainops/sifnode/keys/kubernetes/public"
 require_relative "lib/sifchain/chainops/sifnode/keys/import"
-require_relative "lib/sifchain/chainops/sifnode/keys/public"
 require_relative "lib/sifchain/chainops/sifnode/keys/show"
+require_relative "lib/sifchain/chainops/sifnode/logs/tail"
 require_relative "lib/sifchain/chainops/sifnode/staking/stake"
 require_relative "lib/sifchain/chainops/sifnode/staking/validators"
 require_relative "lib/sifchain/chainops/sifnode/standalone/boot"
@@ -42,11 +44,22 @@ namespace :sifnode do
       run_task(args, t)
     end
 
-    desc "Display a node's public key"
-    task :public, %i[cluster provider namespace kubeconfig] do |t, args|
-      ENV['KUBECONFIG'] = kubeconfig(args) unless args&.key? :kubeconfig
+    desc "Kubernetes"
+    namespace :kubernetes do
+      desc "Display a node's public key"
+      task :public, %i[cluster provider namespace kubeconfig] do |t, args|
+        ENV['KUBECONFIG'] = kubeconfig(args) unless args&.key? :kubeconfig
 
-      run_task(args, t)
+        run_task(args, t)
+      end
+    end
+
+    desc "Docker"
+    namespace :docker do
+      desc "Display a node's public key"
+      task :public, %i[image image_tag] do |t, args|
+        run_task(args, t)
+      end
     end
 
     desc "Show a key in the keyring"
@@ -79,14 +92,9 @@ namespace :sifnode do
     end
   end
 
-  desc "Boot a node"
-  task :boot, %i[chain_id moniker mnemonic gas_price bind_ip_address flags] do |t, args|
-    run_task(args, t)
-  end
-
   desc "Logs"
   namespace :logs do
-    task :tail, %i[cluster namespace rows kubeconfig] do |t, args|
+    task :tail, %i[cluster provider namespace rows kubeconfig] do |t, args|
       ENV['KUBECONFIG'] = kubeconfig(args) unless args&.key? :kubeconfig
       trap('SIGINT') { puts "Exiting..."; exit }
 
@@ -102,10 +110,14 @@ namespace :sifnode do
     run_task(args, t)
   end
 
-    desc "Standalone sifnode"
-    namespace :standalone do
+  desc "Standalone"
+  namespace :standalone do
+    desc "Boot a node"
+    task :boot, %i[chain_id moniker mnemonic gas_price bind_ip_address flags] do |t, args|
+      run_task(args, t)
+    end
 
-        desc "Deploy a single standalone sifnode on to your cluster"
+    desc "Deploy a single standalone sifnode on to your cluster"
         task :deploy, [:cluster, :chainnet, :provider, :namespace, :image, :image_tag, :moniker, :mnemonic, :admin_clp_addresses, :admin_oracle_address, :minimum_gas_prices, :enable_rpc, :enable_external_rpc] do |t, args|
           check_args(args)
 
