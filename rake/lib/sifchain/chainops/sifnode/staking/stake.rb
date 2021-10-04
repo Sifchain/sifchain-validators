@@ -29,7 +29,7 @@ module Sifchain
               --moniker #{get_arg :moniker} \
               --from #{get_arg :moniker} \
               --node #{get_arg :node} \
-              --keyring-backend #{Common.keyring_backend :keyring_backend}
+              --keyring-backend #{Common.keyring_backend(args)}
             CMD
             system cmd, exception: true
           end
