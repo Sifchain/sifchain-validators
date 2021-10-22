@@ -1,3 +1,5 @@
+provider: "aws"
+
 replicaCount: 1
 
 imagePullSecrets: []
@@ -22,6 +24,7 @@ image:
 
 gaia:
   args:
+    mnemonic:
     p2p:
       seeds:
   env:

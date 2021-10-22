@@ -40,6 +40,7 @@ image:
 -=app_name=-:
   env:
     updateforce: "force_update_change_this"
+    symbol_translator_file: -=symbol_translator_file=-
 
 persistence:
   enabled: true

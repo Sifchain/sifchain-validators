@@ -32,10 +32,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "ebrelayer init {{ .Values.ebrelayer.args.nodeHost }} {{ .Values.ebrelayer.args.ethWebsocketAddress }} {{ .Values.ebrelayer.args.ethBridgeRegistryAddress }} $MONIKER \"{{ .Values.ebrelayer.args.mnemonic }}\" --chain-id $CHAINNET --rpc-url {{ .Values.ebrelayer.args.nodeHost }} --gas {{ .Values.ebrelayer.args.gas }} --gas-prices {{ .Values.ebrelayer.args.gasPrices }}"]
+          args: ["-c", "/scripts/start.sh \"{{ .Values.ebrelayer.args.mnemonic }}\" {{ .Values.ebrelayer.args.nodeHost }} {{ .Values.ebrelayer.args.ethWebsocketAddress }} {{ .Values.ebrelayer.args.ethBridgeRegistryAddress }} {{ .Values.ebrelayer.args.gas }}"]
           volumeMounts:
             - name: data
               mountPath: /relayerdb
+            - name: symbol-mapping
+              mountPath: /symbol-mapping
+            - name: scripts
+              mountPath: /scripts
           env:
             - name: MONIKER
               value: {{ .Values.ebrelayer.env.moniker }}
@@ -49,6 +53,10 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+      - name: symbol-mapping
+        configMap:
+          name: {{ include "ebrelayer.fullname" . }}-symbol-mapping
+          defaultMode: 0777
       - name: data
       {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
         persistentVolumeClaim:
@@ -60,6 +68,10 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ include "ebrelayer.fullname" . }}-scripts
+          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

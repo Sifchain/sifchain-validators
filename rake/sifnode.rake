@@ -83,7 +83,6 @@ namespace :sifnode do
                     pub_key
                     node
                     keyring_backend] do |t, args|
-      args.with_defaults(keyring_backend: 'file') unless args&.key? :keyring_backend
       run_task(args, t)
     end
 

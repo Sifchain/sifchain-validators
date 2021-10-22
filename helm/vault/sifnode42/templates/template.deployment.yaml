@@ -40,9 +40,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
           {{- if .Values.sifnode.args.peerAddress }}
-          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && sifgen node create $CHAINNET $MONIKER \"$mnemonic\" --bind-ip-address $EXTERNAL_IP --peer-address $peerAddress --genesis-url $genesisURL $additionalArgs --with-cosmovisor"]
+          args: ["-c", "while [ ! -f /vault/secrets/-=app_name=- ]; do sleep 1; done && source /vault/secrets/-=app_name=- && sifgen node create $CHAINNET $MONIKER \"$mnemonic\" --bind-ip-address $EXTERNAL_IP --peer-address $peerAddress --genesis-url $genesisURL $additionalArgs --with-cosmovisor"]
           {{- else }}
-          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && sifgen node create $CHAINNET $MONIKER \"$mnemonic\" --mint-amount $mintAmount --bond-amount $bondAmount --admin-clp-addresses \"$adminCLPAddresses\" --admin-oracle-address $adminOracleAddress --bind-ip-address $EXTERNAL_IP --gov-max-deposit-period $govMaxDepositPeriod --gov-voting-period $govVotingPeriod $additionalArgs --standalone --with-cosmovisor"]
+          args: ["-c", "while [ ! -f /vault/secrets/-=app_name=- ]; do sleep 1; done && source /vault/secrets/-=app_name=- && sifgen node create $CHAINNET $MONIKER \"$mnemonic\" --mint-amount $mintAmount --bond-amount $bondAmount --admin-clp-addresses \"$adminCLPAddresses\" --admin-oracle-address $adminOracleAddress --bind-ip-address $EXTERNAL_IP --gov-max-deposit-period $govMaxDepositPeriod --gov-voting-period $govVotingPeriod $additionalArgs --standalone --with-cosmovisor"]
           {{- end }}
           volumeMounts:
             - name: data
@@ -64,7 +64,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "while [ ! -f /vault/secrets/-=SERVICE_ACCOUNT=- ]; do sleep 1; done && source /vault/secrets/-=SERVICE_ACCOUNT=- && -=hotfix_command=- /scripts/start.sh \"${minimumGasPrices}\" \"${additionalArgs}\""]
+          args: ["-c", "while [ ! -f /vault/secrets/-=app_name=- ]; do sleep 1; done && source /vault/secrets/-=app_name=- && -=hotfix_command=- cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices \"${minimumGasPrices}\""]
           volumeMounts:
             - name: data
               mountPath: /root

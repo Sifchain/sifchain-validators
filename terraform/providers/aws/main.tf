@@ -48,7 +48,7 @@ data "aws_iam_role" "cluster" {
   name = module.eks.worker_iam_role_name
 }
 
-data "aws_subnet_ids" "a" {
+data "aws_subnet_ids" "az_a" {
   vpc_id = module.vpc.vpc_id
   tags = {
     Name = "${var.cluster_name}-public-${var.region}a"
@@ -56,19 +56,11 @@ data "aws_subnet_ids" "a" {
  depends_on = [ module.vpc ]
 }
 
-data "aws_subnet_ids" "b" {
+data "aws_subnet_ids" "az_b" {
   vpc_id = module.vpc.vpc_id
   tags = {
     Name = "${var.cluster_name}-public-${var.region}b"
-  } 
- depends_on = [ module.vpc ]
-}
-
-data "aws_subnet_ids" "c" {
-  vpc_id = module.vpc.vpc_id
-  tags = {
-    Name = "${var.cluster_name}-public-${var.region}c"
-  } 
+  }
  depends_on = [ module.vpc ]
 }
 
@@ -78,7 +70,7 @@ module "vpc" {
   name           = var.cluster_name
   cidr           = var.vpc_cidr
   azs            = [for az in var.az : format("%s%s", var.region, az)]
-  public_subnets = [cidrsubnet(var.vpc_cidr, 4, 1), cidrsubnet(var.vpc_cidr, 4, 2), cidrsubnet(var.vpc_cidr, 4, 3)]
+  public_subnets = [cidrsubnet(var.vpc_cidr, 4, 1), cidrsubnet(var.vpc_cidr, 4, 2)]
 
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -108,34 +100,23 @@ module "eks" {
   }
 
   node_groups = {
-    main-0 = {
-      desired_capacity  = var.desired_capacity_0
-      max_capacity      = var.max_capacity_0
-      min_capacity      = var.min_capacity_0
+    main0 = {
+      desired_capacity  = var.desired_capacity
+      max_capacity      = var.max_capacity
+      min_capacity      = var.min_capacity
       instance_types    = [var.instance_type]
-      subnets           = data.aws_subnet_ids.a.ids
+      subnets           = data.aws_subnet_ids.az_a.ids
       k8s_labels = {
         Environment = "${var.cluster_name}-${var.region}"
       }
       additional_tags = var.tags
     },
-    main-1 = {
-      desired_capacity  = var.desired_capacity_1
-      max_capacity      = var.max_capacity_1
-      min_capacity      = var.min_capacity_1
+    main1 = {
+      desired_capacity  = var.desired_capacity
+      max_capacity      = var.max_capacity
+      min_capacity      = var.min_capacity
       instance_types    = [var.instance_type]
-      subnets           = data.aws_subnet_ids.b.ids
-      k8s_labels = {
-        Environment = "${var.cluster_name}-${var.region}"
-      }
-      additional_tags = var.tags
-    },
-    main-2 = {
-      desired_capacity  = var.desired_capacity_2
-      max_capacity      = var.max_capacity_2
-      min_capacity      = var.min_capacity_2
-      instance_types    = [var.instance_type]
-      subnets           = data.aws_subnet_ids.c.ids
+      subnets           = data.aws_subnet_ids.az_b.ids
       k8s_labels = {
         Environment = "${var.cluster_name}-${var.region}"
       }

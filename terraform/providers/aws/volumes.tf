@@ -1,6 +1,5 @@
 data "aws_region" "current" {}
 
-
 resource "aws_iam_role" "dlm_lifecycle_role" {
   name = "dlm-lifecycle-role-${var.cluster_name}"
 

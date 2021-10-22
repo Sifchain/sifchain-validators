@@ -35,6 +35,23 @@ spec:
           env:
             - name: MONIKER
               value: {{ .Values.ibcNode.env.moniker }}
+        {{- if .Values.ibcNode.args.upgradeNode }}
+        - name: upgrade
+          securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/scripts/upgrade.sh"]
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+            - name: data
+              mountPath: /root
+          env:
+            - name: BINARY_NAME
+              value: {{ .Values.ibcNode.env.binaryName }}
+            - name: HOME_FOLDER
+              value: {{ .Values.ibcNode.env.homeFolder }}
+        {{- end }}
         - name: setup
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -46,6 +63,10 @@ spec:
             - name: data
               mountPath: /root
           env:
+            - name: S3_SNAPSHOT_URL
+              value: {{ .Values.ibcNode.env.s3_snapshot_url }}
+            - name: SNAPSHOT_RESTORE
+              value: {{ .Values.ibcNode.env.snapshot_restore }}
             - name: CHAINNET
               value: {{ .Values.ibcNode.env.chainnet }}
             - name: MONIKER
@@ -76,7 +97,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "/scripts/start.sh \"{{ .Values.ibcNode.env.minimumGasPrices }}\""]
+          args: ["-c", "/scripts/start.sh \"{{ .Values.ibcNode.env.minimumGasPrices }}\" \"{{ .Values.ibcNode.args.additionalArgs }}\""]
           volumeMounts:
             - name: data
               mountPath: /root
@@ -89,6 +110,16 @@ spec:
             - name: rpc
               containerPort: 26657
               protocol: TCP
+            {{- if .Values.ibcNode.args.enableAPI }}
+            - name: api
+              containerPort: 1317
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.ibcNode.args.enableGrpc }}
+            - name: grpc
+              containerPort: 9090
+              protocol: TCP
+            {{- end }}
           env:
             - name: DAEMON_HOME
               value: "/root/{{ .Values.ibcNode.env.homeFolder }}"

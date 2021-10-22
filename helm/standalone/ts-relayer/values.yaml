@@ -30,8 +30,11 @@ tsRelayer:
     prefix1:
     gas_price0:
     gas_price1:
+    gas_limit0:
+    gas_limit1:
     rpc0:
     rpc1:
+    hdpath1:
 
 service:
 

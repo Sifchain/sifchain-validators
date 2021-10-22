@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Sifchain: Mainnet Genesis Entrypoint.
+# Sifchain: Entry point script.
 #
 
 #
@@ -11,6 +11,13 @@ setup() {
 }
 
 #
+# Cleanup.
+#
+cleanup() {
+  rm -rf "${HOME}"/.sifnoded/keyring*
+}
+
+#
 # Run the node under cosmovisor.
 #
 run() {
@@ -18,4 +25,5 @@ run() {
 }
 
 setup
+cleanup
 run

@@ -107,29 +107,29 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
       - name: data
-      {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
-        persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sifnode.fullname" . }}{{- end }}
-      {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
-        hostPath:
-          path: {{ .Values.persistence.hostPath }}
-          type: DirectoryOrCreate
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: scripts
-        configMap:
-          name: {{ include "sifnode.fullname" . }}-scripts
-          defaultMode: 0777
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+    {{- if and .Values.persistence.enabled (not .Values.persistence.hostPath) }}
+    persistentVolumeClaim:
+      claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sifnode.fullname" . }}{{- end }}
+    {{- else if and .Values.persistence.enabled .Values.persistence.hostPath }}
+    hostPath:
+      path: {{ .Values.persistence.hostPath }}
+      type: DirectoryOrCreate
+    {{- else }}
+    emptyDir: {}
+    {{- end }}
+    - name: scripts
+      configMap:
+        name: {{ include "sifnode.fullname" . }}-scripts
+        defaultMode: 0777
+    {{- with .Values.nodeSelector }}
+    nodeSelector:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+    affinity:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+    tolerations:
+      {{- toYaml . | nindent 8 }}
+    {{- end }}

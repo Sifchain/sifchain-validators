@@ -21,7 +21,7 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 
 WORKDIR /sentinel
-RUN git clone --branch v0.7.0 https://github.com/sentinel-official/hub .
+RUN git clone --branch v0.8.2 https://github.com/sentinel-official/hub .
 RUN go mod download
 RUN make install
 

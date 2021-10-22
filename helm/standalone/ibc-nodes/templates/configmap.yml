@@ -33,6 +33,22 @@ data:
 
     kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
 
+  upgrade.sh: |
+    #!/bin/sh
+    #
+    # ./upgrade.sh
+    #
+
+    VERSION=$(/usr/bin/"${BINARY_NAME}" version)
+    if [ -d "${HOME}"/"${HOME_FOLDER}"/cosmovisor/upgrades/"${VERSION}" ]; then
+      exit 0
+    fi
+
+    mkdir -p "${HOME}"/"${HOME_FOLDER}"/cosmovisor/upgrades/"${VERSION}"/bin
+    cp /usr/bin/"${BINARY_NAME}" "${HOME}"/"${HOME_FOLDER}"/cosmovisor/upgrades/"${VERSION}"/bin
+    rm "${HOME}"/"${HOME_FOLDER}"/cosmovisor/current
+    ln -s "${HOME}"/"${HOME_FOLDER}"/cosmovisor/upgrades/"${VERSION}" "${HOME}"/"${HOME_FOLDER}"/cosmovisor/current
+
   setup.sh: |
     #!/bin/sh
     #
@@ -43,7 +59,13 @@ data:
     # Initialize.
     #
     initialize() {
-      "${BINARY_NAME}" init "${MONIKER}"
+      if [ "${BINARY_NAME}" = "injectived" ]; then
+        echo "execute with chainid"
+        "${BINARY_NAME}" init "${MONIKER}" --chain-id ${CHAINNET}
+      else
+        echo "execute without chainid"
+        "${BINARY_NAME}" init "${MONIKER}"
+      fi
     }
 
     #
@@ -51,7 +73,11 @@ data:
     #
     install_genesis() {
       rm -f "${HOME}"/"${HOME_FOLDER}"/config/genesis.json
+
+      echo "Download the Genesis file: ${GENESIS_URL}"
       wget -O "${HOME}"/"${HOME_FOLDER}"/config/genesis.json.gz "${GENESIS_URL}"
+
+      echo "Unzip the Genesis file"
       gunzip "${HOME}"/"${HOME_FOLDER}"/config/genesis.json.gz
     }
 
@@ -139,13 +165,26 @@ data:
   start.sh: |
     #!/bin/sh
     #
-    # ./start.sh <minimum_gas_prices>
+    # ./start.sh <minimum_gas_prices> <additional_args>
     #
     MINIMUM_GAS_PRICES=$1
-    cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 \
-    --minimum-gas-prices ${MINIMUM_GAS_PRICES} \
-    --pruning custom \
-    --pruning-keep-recent 362880 \
-    --pruning-keep-every 0 \
-    --pruning-interval 100 \
-    --x-crisis-skip-assert-invariants
+    ADDITIONAL_ARGS=$2
+
+    if [ "${DAEMON_NAME}" = "chain-maind" ] || [ "${DAEMON_NAME}" = "regen" ]; then
+      cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 \
+      --minimum-gas-prices ${MINIMUM_GAS_PRICES} \
+      --pruning custom \
+      --pruning-keep-recent 362880 \
+      --pruning-keep-every 0 \
+      --pruning-interval 100 \
+      "${ADDITIONAL_ARGS}"
+    else
+      cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 \
+      --minimum-gas-prices ${MINIMUM_GAS_PRICES} \
+      --pruning custom \
+      --pruning-keep-recent 362880 \
+      --pruning-keep-every 0 \
+      --pruning-interval 100 \
+      --x-crisis-skip-assert-invariants \
+      "${ADDITIONAL_ARGS}"
+    fi
