@@ -161,6 +161,7 @@ EOF
   fi
 
   if [ -d "$(pwd)"/docker/sifchain/"${CHAIN_ID}"/.sifnoded ]; then
+    printf "\n\n"
     read -p "Detected an existing configuration. Would you like to run that now? [If not, it'll be deleted] (y/n): " -n 1 -r
 
     if [ "${REPLY}" = "y" ]; then
