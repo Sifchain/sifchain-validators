@@ -47,10 +47,16 @@ spec:
               value: {{ .Values.tsRelayer.env.gas_price0 }}
             - name: GAS_PRICE1
               value: {{ .Values.tsRelayer.env.gas_price1 }}
+            - name: GAS_LIMIT0
+              value: {{ .Values.tsRelayer.env.gas_limit0 }}
+            - name: GAS_LIMIT1
+              value: {{ .Values.tsRelayer.env.gas_limit1 }}
             - name: RPC0
               value: {{ .Values.tsRelayer.env.rpc0 }}
             - name: RPC1
               value: {{ .Values.tsRelayer.env.rpc1 }}
+            - name: HDPATH1
+              value: {{ .Values.tsRelayer.env.hdpath }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}

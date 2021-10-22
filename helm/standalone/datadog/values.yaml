@@ -472,7 +472,9 @@ clusterAgent:
   # clusterAgent.env -- Set environment variables specific to Cluster Agent
   ## The Cluster-Agent supports many additional environment variables
   ## ref: https://docs.datadoghq.com/agent/cluster_agent/commands/#cluster-agent-options
-  env: []
+  env:
+    - name: DD_LOGS_CONFIG_PROCESSING_RULES
+      value: '[{"type": "exclude_at_match", "name": "exclude_inbound_peer_rejected", "pattern" : "Inbound\\sPeer\\srejected\\serr=\"auth\\sfailure:\\ssecret\\sconn\\sfailed:\\sEOF\""}]'
 
   admissionController:
     # clusterAgent.admissionController.enabled -- Enable the admissionController to be able to inject APM/Dogstatsd config and standard tags (env, service, version) automatically into your pods

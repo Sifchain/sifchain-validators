@@ -5,23 +5,23 @@ metadata:
   name: {{ include "sifnode.fullname" . }}-rpc
   labels:
     {{- include "sifnode.labels" . | nindent 4 }}
-{{- if.Values.sifnode.args.enableExternalRpc }}
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
-    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
-    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-{{- end }}
+  {{- if.Values.sifnode.args.enableExternalRpc }}
+annotations:
+  service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+  service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+  service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  {{- end }}
 spec:
-{{- if.Values.sifnode.args.enableExternalRpc }}
-  type: LoadBalancer
-{{- else }}
-  type: ClusterIP
-{{- end }}
-  ports:
-    - port: 26657
-      protocol: TCP
-      name: rpc
-  selector:
-    {{- include "sifnode.selectorLabels" . | nindent 4 }}
-{{- end }}
+  {{- if.Values.sifnode.args.enableExternalRpc }}
+type: LoadBalancer
+  {{- else }}
+type: ClusterIP
+  {{- end }}
+ports:
+  - port: 26657
+    protocol: TCP
+    name: rpc
+selector:
+  {{- include "sifnode.selectorLabels" . | nindent 4 }}
+  {{- end }}

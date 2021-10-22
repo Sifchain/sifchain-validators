@@ -28,6 +28,7 @@ ebrelayer:
     mnemonic: ""
     gas: "5000000000000"
     gasPrices: "0.5rowan"
+    symbolMapping: ""
   env:
     chainnet: ""
     moniker: ""

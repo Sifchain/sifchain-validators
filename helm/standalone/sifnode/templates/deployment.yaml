@@ -29,37 +29,31 @@ spec:
         - name: external-ip
           image: alpine/k8s:1.18.2
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/scripts/external-ip.sh", "sifnode", "$MONIKER", '{{ include "sifnode.fullname" . }}-external-ip']
+          {{- if contains .Values.provider "aws" }}
+          command: ["/scripts/external-ip.sh", '{{ include "sifnode.fullname" . }}', "$MONIKER", '{{ include "sifnode.fullname" . }}-external-ip']
+          {{- else }}
+          command: ["/scripts/internal-ip.sh", '{{ include "sifnode.fullname" . }}', '{{ .Release.Namespace }}', '{{ include "sifnode.fullname" . }}-internal-ip']
+          {{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts
           env:
             - name: MONIKER
               value: {{ .Values.sifnode.env.moniker }}
-        {{- if.Values.sifnode.args.upgrade.fix }}
-        - name: fix-upgrade
+        - name: setup
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          args: ["-c", "/scripts/fix-upgrade.sh \"{{ .Values.sifnode.args.upgrade.version }}\" {{ .Values.sifnode.args.upgrade.height }}"]
+          {{- if .Values.sifnode.args.standalone }}
+          args: ["-c", "/scripts/standalone.sh \"{{ .Values.sifnode.args.mnemonic }}\" {{ .Values.sifnode.args.mintAmount }} {{ .Values.sifnode.args.bondAmount }} \"{{ .Values.sifnode.args.adminCLPAddresses }}\" {{ .Values.sifnode.args.adminOracleAddress }} {{ .Values.sifnode.args.govMaxDepositPeriod }} {{ .Values.sifnode.args.govVotingPeriod }} {{ .Values.sifnode.args.enableAPI }} {{ .Values.sifnode.args.enableGrpc }}"]
+          {{- else }}
+          args: ["-c", "/scripts/fullnode.sh \"{{ .Values.sifnode.args.mnemonic }}\"  \"{{ .Values.sifnode.args.peerAddress }}\" {{ .Values.sifnode.args.genesisURL }} {{ .Values.sifnode.args.enableAPI }} {{ .Values.sifnode.args.enableGrpc }} {{ .Values.sifnode.args.snapshotURL }}"]
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: /root
             - name: scripts
               mountPath: /scripts
-        {{- end }}
-        - name: setup
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/bin/sh"]
-          {{- if .Values.sifnode.args.peerAddress }}
-          args: ["-c", "sifgen node create $CHAINNET $MONIKER \"{{ .Values.sifnode.args.mnemonic }}\" --bind-ip-address $EXTERNAL_IP --peer-address {{ .Values.sifnode.args.peerAddress }} --genesis-url {{ .Values.sifnode.args.genesisURL }} --with-cosmovisor"]
-          {{- else }}
-          args: ["-c", "sifgen node create $CHAINNET $MONIKER \"{{ .Values.sifnode.args.mnemonic }}\" --mint-amount {{ .Values.sifnode.args.mintAmount }} --bond-amount {{ .Values.sifnode.args.bondAmount }} --admin-clp-addresses \"{{ .Values.sifnode.args.adminCLPAddresses }}\" --admin-oracle-address {{ .Values.sifnode.args.adminOracleAddress }} --bind-ip-address $EXTERNAL_IP --gov-max-deposit-period {{ .Values.sifnode.args.govMaxDepositPeriod }} --gov-voting-period {{ .Values.sifnode.args.govVotingPeriod }} --standalone --with-cosmovisor"]
-          {{- end }}
-          volumeMounts:
-            - name: data
-              mountPath: /root
           env:
             - name: CHAINNET
               value: {{ .Values.sifnode.env.chainnet }}
@@ -68,8 +62,13 @@ spec:
             - name: EXTERNAL_IP
               valueFrom:
                 configMapKeyRef:
+                  {{- if contains .Values.provider "aws" }}
                   name: {{ include "sifnode.fullname" . }}-external-ip
                   key: externalIP
+                  {{- else }}
+                  name: {{ include "sifnode.fullname" . }}-internal-ip
+                  key: internalIP
+                  {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -93,6 +92,11 @@ spec:
             {{- if .Values.sifnode.args.enableAPI }}
             - name: api
               containerPort: 1317
+              protocol: TCP
+            {{- end }}
+            {{- if .Values.sifnode.args.enableGrpc }}
+            - name: grpc
+              containerPort: 9090
               protocol: TCP
             {{- end }}
           env:

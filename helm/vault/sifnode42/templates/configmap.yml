@@ -5,7 +5,9 @@ metadata:
 data:
   external-ip.sh: |
     #!/bin/bash
+    #
     # ./external-ip.sh <service> <namespace> <config_map>
+    #
 
     apk add bind-tools
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# ./import.sh <import_url>
+# Sifchain.
 #
 
 IMPORT_URL=$1

@@ -21,7 +21,7 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 
 WORKDIR /osmosis
-RUN git clone --branch v3.1.0 https://github.com/osmosis-labs/osmosis .
+RUN git clone --branch v4.0.0 https://github.com/osmosis-labs/osmosis .
 RUN go mod download
 RUN make install
 

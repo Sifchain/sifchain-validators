@@ -28,7 +28,11 @@ spec:
       initContainers:
         - name: external-ip
           image: alpine/k8s:1.18.2
+          {{- if contains .Values.provider "aws" }}
           command: ["/scripts/external-ip.sh", "gaia", "$MONIKER", '{{ include "gaia.fullname" . }}-external-ip']
+          {{- else }}
+          command: ["/scripts/internal-ip.sh", "gaia", '{{ .Release.Namespace }}', '{{ include "gaia.fullname" . }}-internal-ip']
+          {{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts
@@ -37,12 +41,13 @@ spec:
               value: {{ .Values.gaia.env.moniker }}
         - name: setup
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          command: ["/scripts/setup.sh"]
+          command: ["/bin/sh"]
+          args: ["-c", "/scripts/setup.sh \"{{ .Values.gaia.args.mnemonic }}\""]
           volumeMounts:
-            - name: scripts
-              mountPath: /scripts
             - name: data
               mountPath: /root
+            - name: scripts
+              mountPath: /scripts
           env:
             - name: CHAINNET
               value: {{ .Values.gaia.env.chainnet }}
@@ -51,22 +56,25 @@ spec:
             - name: EXTERNAL_IP
               valueFrom:
                 configMapKeyRef:
+                  {{- if contains .Values.provider "aws" }}
                   name: {{ include "gaia.fullname" . }}-external-ip
                   key: externalIP
+                  {{- else }}
+                  name: {{ include "gaia.fullname" . }}-internal-ip
+                  key: internalIP
+                  {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext: {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
-          {{- if .Values.gaia.args.p2p.seeds }}
-          args: ["-c", "gaiad start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.seeds={{ .Values.gaia.args.p2p.seeds }} --x-crisis-skip-assert-invariants --log_format json"]
-          {{- else }}
-          args: ["-c", "gaiad start --rpc.laddr=tcp://0.0.0.0:26657 --x-crisis-skip-assert-invariants --log_format json"]
-          {{- end }}
+          args: ["-c", "/scripts/start.sh \"{{ .Values.gaia.args.p2p.seeds }}\""]
           volumeMounts:
             - name: data
               mountPath: /root
+            - name: scripts
+              mountPath: /scripts
           ports:
             - name: p2p
               containerPort: 26656

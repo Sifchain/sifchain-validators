@@ -1,3 +1,5 @@
 .live
+.terraform
+.aws
+.kube
 networks
-**/.sifnoded

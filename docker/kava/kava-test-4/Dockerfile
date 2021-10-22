@@ -11,9 +11,9 @@ ENV GOOS=linux
 RUN go get github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor
 
 #
-# Build: Akash
+# Build: Kava
 #
-FROM golang:1.16 AS kvd
+FROM golang:1.16 AS kava
 
 ENV GOBIN=/go/bin
 ENV GOPATH=/go
@@ -21,7 +21,7 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 
 
-WORKDIR /kvd
+WORKDIR /kava
 RUN git clone --branch v0.11.0-rc2 https://github.com/kava-labs/kava .
 RUN go mod download
 RUN make install
@@ -41,4 +41,4 @@ RUN apk add --update --no-cache $PACKAGES
 
 # Copy the compiled binaires over.
 COPY --from=cosmovisor /go/bin/cosmovisor /usr/bin/cosmovisor
-COPY --from=kvd /go/bin/kvd /usr/bin/kvd
+COPY --from=kava /go/bin/kvd /usr/bin/kvd

@@ -1,0 +1,75 @@
+replicaCount: 1
+
+imagePullSecrehermes: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+image:
+  repository: sifchain/hermes
+  pullPolicy: Always
+  tag: v1.0.0
+
+hermesRelayer:
+  env:
+    gaia_mnemonic:
+    akash_mnemonic:
+    iris_mnemonic:
+    sifnode_mnemonic:
+    sentinel_mnemonic:
+    persistence_mnemonic:
+    osmosis_mnemonic:
+    regen_mnemonic:
+    crypto_mnemonic:
+    relayer_mapping:
+    hermes_config_location:
+    connection_mapping:
+
+service:
+  type: LoadBalancer
+  port: 3001
+
+persistence:
+  enabled: true
+  size: 5Gi
+  accessMode: ReadWriteOnce
+
+ingress:
+  enabled: false
+  annotations: {}
+  hoshermes:
+    - host: hermes-relayer.local
+      paths: []
+  tls: []
+
+resources:
+  requests:
+    cpu: 1
+    memory: 1Gi
+  limits:
+    memory: 2Gi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+strategyType: Recreate
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+

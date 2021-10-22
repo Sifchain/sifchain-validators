@@ -22,8 +22,14 @@ image:
 
 ibcNode:
   args:
+    additionalArgs: ""
+    enableAPI: false
+    enableGrpc: false
     enableRpc: false
+    enableExternalAPI: false
+    enableExternalGrpc: false
     enableExternalRpc: false
+    upgradeNode: false
     p2p:
       seeds:
   env:
@@ -38,6 +44,8 @@ ibcNode:
     minimumGasPrices: ""
     daemonAllowDownloadBinaries: true
     daemonRestartAfterUpgrade: true
+    #snapshot_restore: false
+    #s3_snapshot_url: "s3://injective-snapshots/mainnet/injectived/data"
 
 service:
   type: LoadBalancer
@@ -45,7 +53,7 @@ service:
 
 persistence:
   enabled: true
-  size: 750Gi
+  size: 1250Gi
   accessMode: ReadWriteOnce
 
 ingress:
@@ -58,10 +66,11 @@ ingress:
 
 resources:
   requests:
-    cpu: 2
-    memory: 8Gi
-  limits:
+    cpu: 4
     memory: 16Gi
+  limits:
+    cpu: 7.5
+    memory: 30Gi
 
 autoscaling:
   enabled: false

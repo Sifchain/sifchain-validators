@@ -37,10 +37,16 @@ spec:
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/bin/sh"]
+          {{- if.Values.-=app_name=-.env.symbol_translator_file }}
+          args: ["-c", "cat -=symbol_translator_file=- && while [ ! -f /vault/secrets/ebrelayer ]; do sleep 1; done && source /vault/secrets/ebrelayer && echo \"$mnemonic\" | sifnoded keys add $MONIKER --keyring-backend test --recover && ebrelayer init $nodeHost $ethWebsocketAddress $ethBridgeRegistryAddress $MONIKER \"$mnemonic\" --from $MONIKER --symbol-translator-file -=symbol_translator_file=- --chain-id $CHAINNET --node $nodeHost --gas $gas --keyring-backend test"]
+          {{- else }}
           args: ["-c", "while [ ! -f /vault/secrets/ebrelayer ]; do sleep 1; done && source /vault/secrets/ebrelayer && echo \"$mnemonic\" | sifnoded keys add $MONIKER --keyring-backend test --recover && ebrelayer init $nodeHost $ethWebsocketAddress $ethBridgeRegistryAddress $MONIKER \"$mnemonic\" --from $MONIKER --chain-id $CHAINNET --node $nodeHost --gas $gas --keyring-backend test"]
+          {{- end }}
           volumeMounts:
             - name: data
               mountPath: /relayerdb
+            - name: mappingdata
+              mountPath: -=symbol_translator_mountpath=-
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -55,6 +61,10 @@ spec:
         {{- else }}
         emptyDir: {}
         {{- end }}
+      - name: mappingdata
+        configMap:
+          name: {{ include "-=app_name=-.fullname" . }}-ibc-mapping
+          defaultMode: 0777
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -5,7 +5,9 @@ metadata:
 data:
   external-ip.sh: |
     #!/bin/bash
+    #
     # ./external-ip.sh <service> <namespace> <config_map>
+    #
 
     apk add bind-tools
 
@@ -31,28 +33,75 @@ data:
 
     kubectl create configmap $CONFIGMAP --from-literal=externalIP=$external_ip --dry-run=client -o yaml | kubectl apply -f -
 
+  internal-ip.sh: |
+    #!/bin/bash
+    #
+    # ./internal-ip.sh <service> <namespace> <config_map>
+    #
+
+    apk add bind-tools
+
+    SERVICE=$1
+    NAMESPACE=$2
+    CONFIGMAP=$3
+
+    echo $MONIKER
+    echo $SERVICE
+    echo $NAMESPACE
+    echo $CONFIGMAP
+
+    internal_ip=""
+
+    while [ -z $internal_ip ]; do
+      echo "Waiting for internal endpoint..."
+      internal_ip=$(kubectl get svc $SERVICE -n $NAMESPACE -o jsonpath='{.spec.clusterIP}')
+      [ -z $internal_ip ] && sleep 10
+    done
+
+    kubectl create configmap $CONFIGMAP --from-literal=internalIP=$internal_ip --dry-run=client -o yaml | kubectl apply -f -
+
   setup.sh: |
     #!/bin/sh
-    # ./setup.sh
+    #
+    # ./setup.sh <mnemonic>
+    #
 
+    MNEMONIC=$1
     TMP_DIR=/tmp
 
-    if [ -f $HOME/.gaia/config/genesis.json ]; then
+    if [ -f "${HOME}"/.gaia/config/genesis.json ]; then
       exit 0
     fi
 
-    if [ $CHAINNET == "devnet" ] || [ $CHAINNET == "testnet" ]; then
-      gaiad init $MONIKER
+    gaiad init "${MONIKER}" --chain-id "${CHAINNET}"
 
+    if [ "${CHAINNET}" = "cosmoshub-testnet" ]; then
       curl -s https://rpc.testnet.cosmos.network/genesis | jq -r .result.genesis > $HOME/.gaia/config/genesis.json
       sed -i 's/seeds =.*/seeds = "30dce239c56cfd25cf0cebf5726c7c8be1e46f66@p2p.testnet.cosmos.network:31626,754a5f864adc5a60b287d4aed4f0ab11d8b056c8@p2p.testnet.cosmos.network:31654"/g' $HOME/.gaia/config/config.toml
+    elif [ "${CHAINNET}" = "cosmoshub-4" ]; then
+      mkdir -p "${TMP_DIR}"
+      wget -O "${TMP_DIR}"/genesis.cosmoshub-4.json.gz https://github.com/cosmos/mainnet/raw/master/genesis.cosmoshub-4.json.gz
+      gunzip "${TMP_DIR}"/genesis.cosmoshub-4.json.gz
+      mv "${TMP_DIR}"/genesis.cosmoshub-4.json $HOME/.gaia/config/genesis.json
     else
-      gaiad init $MONIKER
-
-      mkdir -p TMP_DIR
-      wget -O $TMP_DIR/genesis.cosmoshub-4.json.gz https://github.com/cosmos/mainnet/raw/master/genesis.cosmoshub-4.json.gz
-      gunzip $TMP_DIR/genesis.cosmoshub-4.json.gz
-      mv $TMP_DIR/genesis.cosmoshub-4.json $HOME/.gaia/config/genesis.json
+      printf "%s\n\n" "${MNEMONIC}" | gaiad keys add "${MONIKER}" -i --recover --keyring-backend test
+      gaiad add-genesis-account $(gaiad keys show "${MONIKER}" -a --keyring-backend test) 100000000000000000stake
+      gaiad gentx "${MONIKER}" 1000000000stake --chain-id "${CHAINNET}" --keyring-backend test
+      gaiad collect-gentxs
     fi
 
     sed -i -e "s/external_address = \"\"/external_address = \"${EXTERNAL_IP}:26656\"/g" $HOME/.gaia/config/config.toml
+
+  start.sh: |
+    #!/bin/sh
+    #
+    # ./start.sh <seeds>
+    #
+
+    SEEDS=$1
+
+    if [ ! -z "${SEEDS}" ]; then
+      gaiad start --rpc.laddr tcp://0.0.0.0:26657 --p2p.seeds="${SEEDS}" --x-crisis-skip-assert-invariants
+    else
+      gaiad start --rpc.laddr tcp://0.0.0.0:26657 --x-crisis-skip-assert-invariants
+    fi

@@ -5,7 +5,7 @@ FROM rust:1.54 AS hermes
 
 WORKDIR /hermes
 
-RUN git clone -b v0.6.2 https://github.com/informalsystems/ibc-rs.git .
+RUN git clone -b v0.7.3 https://github.com/informalsystems/ibc-rs.git .
 RUN cargo clean && \
     cargo build -vv --release
 
