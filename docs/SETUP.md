@@ -4,7 +4,7 @@
 
 #### Prerequisites / Dependencies:
 
-- Clone this repository (`git clone ssh://git@github.com/Sifchain/sifchain-deploy`)
+- Clone this repository (`git clone ssh://git@github.com/Sifchain/sifchain-validators`)
 - [Docker](https://www.docker.com/get-started)
 
 ### Kubernetes
@@ -15,7 +15,7 @@ Kubernetes is an open-source container-orchestration system for automating appli
 
 #### Setup
 
-To launch a node with Kubernetes, please see [here](https://github.com/Sifchain/sifchain-deploy/tree/master/docs/kubernetes.md).
+To launch a node with Kubernetes, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/kubernetes.md).
 
 ### Standalone
 
@@ -25,4 +25,4 @@ Our standalone solution makes use of Docker and Docker Compose. Please note that
 
 #### Setup
 
-To launch a standalone node, please see [here](https://github.com/Sifchain/sifchain-deploy/tree/master/docs/standalone.md).
+To launch a standalone node, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/standalone.md).

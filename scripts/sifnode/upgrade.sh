@@ -30,6 +30,6 @@ if [ ! -d "${HOME}"/.sifnoded/cosmovisor/upgrades/"${CURRENT_VERSION}" ]; then
   unzip sifnoded.zip
 fi
 
-wget -O /usr/local/bin/migrate.sh https://raw.githubusercontent.com/Sifchain/sifchain-deploy-public/master/scripts/sifnode/migrate.sh
+wget -O /usr/local/bin/migrate.sh https://raw.githubusercontent.com/Sifchain/sifchain-validators/master/scripts/sifnode/migrate.sh
 chmod +x /usr/local/bin/migrate.sh
 /usr/local/bin/migrate.sh -b "${INITIAL_HEIGHT}" -c "${CHAINNET}" -s "${COSMOS_SDK_VERSION}" -t "${GENESIS_TIME}" -v "${VERSION}" -w "${CURRENT_VERSION}" -z "${DATA_MIGRATE_VERSION}"
