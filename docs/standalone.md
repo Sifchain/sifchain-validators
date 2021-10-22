@@ -89,7 +89,7 @@ where:
 |`<amount>`|The amount to stake, including the denomination (e.g.: `100000000rowan`). The precision used is 1e18.|
 |`<gas>`| The per-transaction gas limit (e.g.: `300000`).|
 |`<gas_prices>`|The minimum gas price to use  (e.g.: `0.5rowan`).|
-|`<public_key>`|The public key of your validator (you got this in the previous step).|
+|`<public_key>`|The public key of your validator.|
 |`<node_rpc_address>`|The address to broadcast the transaction to (`tcp://rpc-testnet.sifchain.finance:80` for TestNet or `tcp://rpc.sifchain.finance:80`) for BetaNet.|
 
 e.g.:
