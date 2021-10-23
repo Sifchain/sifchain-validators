@@ -5,21 +5,15 @@
 
 . $(pwd)/scripts/globals.sh
 
-PROVIDER=aws
-
 #
 # Usage.
 #
 usage() {
   cat <<- EOF
-  Usage: $(basename "${0}") [OPTIONS]
+  Usage: $0 [OPTIONS]
 
   Options:
-  -h      This help output.
-  -c      Cluster.
-  -r      Region.
-  -s      Role.
-  -p      Profile.
+  -c      Chain ID
 EOF
   exit 1
 }
@@ -30,50 +24,27 @@ EOF
 init() {
   docker_installed
   jq_installed
-
-  cat "$(pwd)"/scripts/.logo
-
-  docker pull sifchain/wizard:latest 2>/dev/null &
-  pid=$!
-  spinner $pid "Please wait..."
-  clear
 }
 
 #
 # Setup
 #
 setup() {
-  cluster_name "${1}"
-  aws_region "${2}"
-  aws_role "${3}"
-  aws_profile "${4}"
-  AWS_PROFILE=${AWS_PROFILE:-sifchain}
-}
-
-#
-# Generate kubeconfig.
-#
-kubeconfig() {
-  docker run -it \
-  -e CLUSTER_NAME="${CLUSTER_NAME}" \
-  -e AWS_REGION="${AWS_REGION}" \
-  -e AWS_PROFILE="${AWS_PROFILE}" \
-  -v "${AWS_MOUNT}" \
-  -v "${KUBE_MOUNT}" \
-  -v "${DEPLOY_MOUNT}" \
-  sifchain/wizard:latest sh -c "make -s -C /opt/deploy provider-aws-kubeconfig"
+  chain_id "${1}"
 }
 
 #
 # Node status.
 #
 sifnode_status() {
-  STATUS=$(docker run -it \
-  -e NAMESPACE=sifnode \
-  -v "${AWS_MOUNT}" \
-  -v "${KUBE_MOUNT}" \
-  -v "${DEPLOY_MOUNT}" \
-  sifchain/wizard:latest sh -c "make -s -C /opt/deploy sifnode-kubernetes-status")
+  container="$(docker container ps | grep "${CHAIN_ID}" | awk '{ print $1 }')"
+  if [ -z "${container}" ]; then
+    clear
+    printf "\nNo container found. Exiting.\n"
+    exit 0
+  fi
+
+  STATUS=$(docker exec -it "${container}" sh -c "curl http://localhost:26657/status")
 }
 
 #
@@ -203,40 +174,25 @@ EOF
 #
 run() {
   clear
-  aws_configured $(pwd)
 
-  if [ "${AWS_CONFIGURED}" ]; then
-    # Set mounts.
-    mount_aws $(pwd)
-    mount_terraform $(pwd)
-    mount_kube $(pwd)
-    mount_deploy $(pwd)
+  # Raw status
+  sifnode_status
 
-    kubeconfig
+  # Processed status
+  sifnode_id
+  sifnode_listen_address
+  sifnode_chain_id
+  sifnode_latest_block_hash
+  sifnode_latest_app_hash
+  sifnode_latest_block_height
+  sifnode_latest_block_time
+  sifnode_earliest_block_hash
+  sifnode_earliest_app_hash
+  sifnode_earliest_block_height
+  sifnode_earliest_block_time
+  sifnode_in_sync
 
-    # Raw status
-    sifnode_status
-
-    # Processed status
-    sifnode_id
-    sifnode_listen_address
-    sifnode_chain_id
-    sifnode_latest_block_hash
-    sifnode_latest_app_hash
-    sifnode_latest_block_height
-    sifnode_latest_block_time
-    sifnode_earliest_block_hash
-    sifnode_earliest_app_hash
-    sifnode_earliest_block_height
-    sifnode_earliest_block_time
-    sifnode_in_sync
-
-    sifnode_summary "${1}"
-  else
-    clear
-    printf "\nAWS has not been configured. Exiting.\n"
-    exit 0
-  fi
+  sifnode_summary
 }
 
 while getopts ":hc:r:s:p:" opt; do
@@ -247,15 +203,6 @@ while getopts ":hc:r:s:p:" opt; do
     c)
       c=${OPTARG}
       ;;
-    r)
-      r=${OPTARG}
-      ;;
-    s)
-      s=${OPTARG}
-      ;;
-    p)
-      p=${OPTARG}
-      ;;
     *)
       usage
       ;;
@@ -263,11 +210,10 @@ while getopts ":hc:r:s:p:" opt; do
 done
 shift $((OPTIND-1))
 
-if [ -z "${c}" ] ||
-    [ -z "${r}" ]; then
+if [ -z "${c}" ]; then
   usage
 fi
 
-init "${0}"
-setup "${c}" "${r}" "${s}" "${p}"
-run "${0}"
+init
+setup "${c}"
+run

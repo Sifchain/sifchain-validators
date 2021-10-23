@@ -3,6 +3,8 @@
 # Sifchain.
 #
 
+. $(pwd)/scripts/globals.sh
+
 #
 # Usage.
 #
@@ -21,25 +23,39 @@ EOF
 }
 
 #
+# Initialize.
+#
+init() {
+  docker_installed
+}
+
+#
 # Setup.
 #
 setup() {
-  CHAIN_ID="${1}"
-  MONIKER="${2}"
-  MNEMONIC="${3}"
-  GAS_PRICE="${4}"
-  BIND_IP_ADDRESS="${5}"
+  chain_id "${1}"
+  moniker "${2}"
+  mnemonic "${3}"
+  gas_price "${4}"
+  bind_ip_address "${5}"
 }
 
 #
 # Run.
 #
 run() {
-  MONIKER="${MONIKER}" \
-  MNEMONIC="$(echo "${MNEMONIC}" | base64 -d)" \
-  GAS_PRICE="${GAS_PRICE}" \
-  BIND_IP_ADDRESS="${BIND_IP_ADDRESS}" \
-  docker-compose -f $(pwd)/docker/sifchain/"${CHAIN_ID}"/docker-compose.yml up
+  clear
+  cat "$(pwd)"/scripts/.logo
+
+  if [ -d "$(pwd)"/docker/sifchain/"${CHAIN_ID}"/.sifnoded ]; then
+    docker-compose -f $(pwd)/docker/sifchain/"${CHAIN_ID}"/docker-compose.yml up
+  else
+    MONIKER="${MONIKER}" \
+    MNEMONIC="$(echo "${MNEMONIC}" | base64 -d)" \
+    GAS_PRICE="${GAS_PRICE}" \
+    BIND_IP_ADDRESS="${BIND_IP_ADDRESS}" \
+    docker-compose -f $(pwd)/docker/sifchain/"${CHAIN_ID}"/docker-compose.yml up
+  fi
 }
 
 while getopts ":hc:m:p:g:b:" opt; do
@@ -69,13 +85,20 @@ while getopts ":hc:m:p:g:b:" opt; do
 done
 shift $((OPTIND-1))
 
-if [ -z "${c}" ] ||
-    [ -z "${m}" ] ||
-    [ -z "${p}" ] ||
-    [ -z "${g}" ] ||
-    [ -z "${b}" ]; then
-  usage
+if [ -d "$(pwd)"/docker/sifchain/"${CHAIN_ID}"/.sifnoded ]; then
+  if [ -z "${c}" ]; then
+    usage
+  fi
+else
+  if [ -z "${c}" ] ||
+      [ -z "${m}" ] ||
+      [ -z "${p}" ] ||
+      [ -z "${g}" ] ||
+      [ -z "${b}" ]; then
+    usage
+  fi
 fi
 
+init
 setup "${c}" "${m}" "${p}" "${g}" "${b}"
 run "${0}"

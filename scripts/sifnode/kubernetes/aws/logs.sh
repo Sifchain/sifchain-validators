@@ -16,6 +16,7 @@ usage() {
 
   Options:
   -h      This help output.
+  -t      Tail count.
   -c      Cluster.
   -r      Region.
   -s      Role.
@@ -42,10 +43,11 @@ init() {
 # Setup
 #
 setup() {
-  cluster_name "${1}"
-  aws_region "${2}"
-  aws_role "${3}"
-  aws_profile "${4}"
+  tail_count "${1}"
+  cluster_name "${2}"
+  aws_region "${3}"
+  aws_role "${4}"
+  aws_profile "${5}"
   AWS_PROFILE=${AWS_PROFILE:-sifchain}
 }
 
@@ -64,15 +66,16 @@ kubeconfig() {
 }
 
 #
-# Sifnode shell.
+# Sifnode logs.
 #
-sifnode_shell() {
+sifnode_logs() {
   docker run -it \
   -e NAMESPACE=sifnode \
+  -e TAIL_COUNT="${TAIL_COUNT}" \
   -v "${AWS_MOUNT}" \
   -v "${KUBE_MOUNT}" \
   -v "${DEPLOY_MOUNT}" \
-  sifchain/wizard:latest sh -c "make -s -C /opt/deploy sifnode-kubernetes-shell"
+  sifchain/wizard:latest sh -c "make -s -C /opt/deploy sifnode-kubernetes-logs"
 }
 
 #
@@ -93,8 +96,8 @@ run() {
 
     kubeconfig
 
-    # Shell
-    sifnode_shell
+    # Logs
+    sifnode_logs
   else
     clear
     printf "\nAWS has not been configured. Exiting.\n"
@@ -102,10 +105,13 @@ run() {
   fi
 }
 
-while getopts ":hc:r:s:p:" opt; do
+while getopts ":ht:c:r:s:p:" opt; do
   case "${opt}" in
     h)
       usage
+      ;;
+    t)
+      t=${OPTARG}
       ;;
     c)
       c=${OPTARG}
@@ -126,11 +132,12 @@ while getopts ":hc:r:s:p:" opt; do
 done
 shift $((OPTIND-1))
 
-if [ -z "${c}" ] ||
+if [ -z "${t}" ] ||
+    [ -z "${c}" ] ||
     [ -z "${r}" ]; then
   usage
 fi
 
 init "${0}"
-setup "${c}" "${r}" "${s}" "${p}"
+setup "${t}" "${c}" "${r}" "${s}" "${p}" "${t}"
 run "${0}"

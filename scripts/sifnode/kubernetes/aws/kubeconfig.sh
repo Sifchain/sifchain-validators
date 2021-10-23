@@ -64,18 +64,6 @@ kubeconfig() {
 }
 
 #
-# Sifnode shell.
-#
-sifnode_shell() {
-  docker run -it \
-  -e NAMESPACE=sifnode \
-  -v "${AWS_MOUNT}" \
-  -v "${KUBE_MOUNT}" \
-  -v "${DEPLOY_MOUNT}" \
-  sifchain/wizard:latest sh -c "make -s -C /opt/deploy sifnode-kubernetes-shell"
-}
-
-#
 # Run
 #
 run() {
@@ -87,14 +75,11 @@ run() {
   if [ "${AWS_CONFIGURED}" ]; then
     # Set mounts.
     mount_aws "$(pwd)"
-    mount_terraform "$(pwd)"
     mount_kube "$(pwd)"
     mount_deploy "$(pwd)"
 
+    # Kubeconfig.
     kubeconfig
-
-    # Shell
-    sifnode_shell
   else
     clear
     printf "\nAWS has not been configured. Exiting.\n"
