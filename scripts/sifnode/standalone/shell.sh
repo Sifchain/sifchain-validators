@@ -3,6 +3,8 @@
 # Sifchain.
 #
 
+. $(pwd)/scripts/globals.sh
+
 #
 # Usage.
 #
@@ -17,16 +19,26 @@ EOF
 }
 
 #
-# Chain ID.
+# Initialize.
 #
-chain_id() {
-  CHAIN_ID="${1}"
+init() {
+  docker_installed
+}
+
+#
+# Setup.
+#
+setup() {
+  chain_id "${1}"
 }
 
 #
 # Run.
 #
 run() {
+  clear
+  cat "$(pwd)"/scripts/.logo
+
   docker exec -it $(docker container ps | grep "${CHAIN_ID}" | awk '{ print $1 }') sh
 }
 
@@ -49,5 +61,6 @@ if [ -z "${c}" ]; then
   usage
 fi
 
-chain_id "${c}"
+init
+setup "${c}"
 run

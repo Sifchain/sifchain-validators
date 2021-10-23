@@ -46,6 +46,20 @@ where:
 |-----|----------|
 |`<chain_id>`|The chain ID that your node is connected to (`sifchain-testnet-1` or `sifchain-1`).|
 
+e.g.:
+
+For TestNet:
+
+```bash
+CHAIN_ID=sifchain-testnet-1 make sifnode-standalone-shell
+```
+
+For BetaNet:
+
+```bash
+CHAIN_ID=sifchain-1 make sifnode-standalone-shell
+```
+
 2. Once logged in, import your mnemonic from the previous section:
 
 ```bash

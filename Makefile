@@ -1,4 +1,4 @@
-SHELL := env CLUSTER_NAME=$(CLUSTER_NAME) CHAIN_ID=$(CHAIN_ID) NAMESPACE=$(NAMESPACE) DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_IMAGE_TAG=$(DOCKER_IMAGE_TAG) MONIKER=$(MONIKER) MNEMONIC=$(MNEMONIC) PEER_ADDRESS=$(PEER_ADDRESS) GENESIS_URL=$(GENESIS_URL) API_ACCESS=$(API_ACCESS) ENABLE_API_ACCESS=$(ENABLE_API_ACCESS) GRPC_ACCESS=$(GRPC_ACCESS) ENABLE_GRPC_ACCESS=$(ENABLE_GRPC_ACCESS) RPC_ACCESS=$(RPC_ACCESS) ENABLE_RPC_ACCESS=$(ENABLE_RPC_ACCESS) ENABLE_EXTERNAL_API_ACCESS=$(ENABLE_EXTERNAL_API_ACCESS) ENABLE_EXTERNAL_GRPC_ACCESS=$(ENABLE_EXTERNAL_GRPC_ACCESS) ENABLE_EXTERNAL_RPC_ACCESS=$(ENABLE_EXTERNAL_RPC_ACCESS) AWS_REGION=$(AWS_REGION) AWS_ROLE=$(AWS_ROLE) AWS_PROFILE=$(AWS_PROFILE) POD=$(POD) $(SHELL)
+SHELL := env CLUSTER_NAME=$(CLUSTER_NAME) CHAIN_ID=$(CHAIN_ID) NAMESPACE=$(NAMESPACE) DOCKER_IMAGE=$(DOCKER_IMAGE) DOCKER_IMAGE_TAG=$(DOCKER_IMAGE_TAG) MONIKER=$(MONIKER) MNEMONIC=$(MNEMONIC) PEER_ADDRESS=$(PEER_ADDRESS) GENESIS_URL=$(GENESIS_URL) API_ACCESS=$(API_ACCESS) ENABLE_API_ACCESS=$(ENABLE_API_ACCESS) GRPC_ACCESS=$(GRPC_ACCESS) ENABLE_GRPC_ACCESS=$(ENABLE_GRPC_ACCESS) RPC_ACCESS=$(RPC_ACCESS) ENABLE_RPC_ACCESS=$(ENABLE_RPC_ACCESS) ENABLE_EXTERNAL_API_ACCESS=$(ENABLE_EXTERNAL_API_ACCESS) ENABLE_EXTERNAL_GRPC_ACCESS=$(ENABLE_EXTERNAL_GRPC_ACCESS) ENABLE_EXTERNAL_RPC_ACCESS=$(ENABLE_EXTERNAL_RPC_ACCESS) AWS_REGION=$(AWS_REGION) AWS_ROLE=$(AWS_ROLE) AWS_PROFILE=$(AWS_PROFILE) POD=$(POD) TAIL_COUNT=$(TAIL_COUNT) $(SHELL)
 
 KEYRING_BACKEND?=test
 CHAIN_ID?=sifchain-testnet-1
@@ -28,6 +28,7 @@ ENABLE_EXTERNAL_GRPC_ACCESS?=false
 ENABLE_EXTERNAL_RPC_ACCESS?=false
 SNAPSHOT_URL?=""
 POD?=""
+TAIL_COUNT?=150
 
 build-image:
 	docker build -t sifchain/$(SERVICE):$(IMAGE_TAG) -f ./docker/$(SERVICE)/$(IMAGE_TAG)/Dockerfile .
@@ -63,6 +64,9 @@ sifnode-standalone-wizard:
 sifnode-standalone-shell:
 	@./scripts/sifnode/standalone/shell.sh -c $(CHAIN_ID)
 
+sifnode-standalone-status:
+	@./scripts/sifnode/standalone/status.sh -c $(CHAIN_ID)
+
 sifnode-staking-stake:
 	@./scripts/sifnode/staking/stake.sh -c $(COMMISSION_MAX_CHANGE_RATE) -d $(COMMISSION_MAX_RATE) -e $(COMMISSION_RATE) -a $(AMOUNT) -g $(GAS) -p $(GAS_PRICES) -k $(PUBKEY) -r $(NODE) -b $(KEYRING_BACKEND)
 
@@ -80,6 +84,12 @@ provider-aws-kubeconfig:
 
 provider-github-var-map:
 	@./scripts/provider/github/var_map.sh -e $(ENVIRONMENT) -f $(FILE)
+
+sifnode-kubernetes-aws-configure:
+	@./scripts/sifnode/kubernetes/aws/configure.sh
+
+sifnode-kubernetes-aws-kubeconfig:
+	@./scripts/sifnode/kubernetes/aws/kubeconfig.sh -c $(CLUSTER_NAME) -r $(AWS_REGION) -s $(AWS_ROLE) -p $(AWS_PROFILE)
 
 sifnode-kubernetes-deploy-peer:
 	@./scripts/sifnode/kubernetes/deploy/peer.sh -c $(CHAIN_ID) -n $(NAMESPACE) -d $(DOCKER_IMAGE) -t $(DOCKER_IMAGE_TAG) -m $(MONIKER) -q "$(MNEMONIC)" -p $(PEER_ADDRESS) -u $(GENESIS_URL) -a $(ENABLE_API_ACCESS) -g $(ENABLE_GRPC_ACCESS) -r $(ENABLE_RPC_ACCESS) -b $(ENABLE_EXTERNAL_API_ACCESS) -i $(ENABLE_EXTERNAL_GRPC_ACCESS) -s $(ENABLE_EXTERNAL_RPC_ACCESS)
@@ -99,5 +109,14 @@ sifnode-kubernetes-shell:
 sifnode-kubernetes-aws-shell:
 	@./scripts/sifnode/kubernetes/aws/shell.sh -c $(CLUSTER_NAME) -r $(AWS_REGION) -p $(AWS_PROFILE)
 
+sifnode-kubernetes-logs:
+	@./scripts/sifnode/kubernetes/logs.sh -t $(TAIL_COUNT) -n $(NAMESPACE)
+
+sifnode-kubernetes-aws-logs:
+	@./scripts/sifnode/kubernetes/aws/logs.sh -t $(TAIL_COUNT) -c $(CLUSTER_NAME) -r $(AWS_REGION) -p $(AWS_PROFILE)
+
 testnet-launch:
 	@./scripts/testnet/launch.sh -c $(CHAIN_ID) -m "$(VALIDATOR_MNEMONICS)" -a "$(ADMIN_MNEMONICS)" -n $(NAMESPACE) -i $(DOCKER_IMAGE_TAG) -e $(ETH_WEBSOCKET_ADDRESS) -b $(ETH_BRIDGE_REGISTRY_ADDRESS) -s $(ETH_SYMBOL_MAPPING) -p "$(ETH_PRIVATE_KEYS)"
+
+wizard:
+	@./scripts/wizard.sh

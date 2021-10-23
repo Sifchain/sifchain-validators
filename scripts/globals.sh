@@ -115,6 +115,20 @@ mnemonic() {
 }
 
 #
+# Gas price.
+#
+gas_price() {
+  GAS_PRICE="${1}"
+}
+
+#
+# Bind IP Address.
+#
+bind_ip_address() {
+  BIND_IP_ADDRESS="${1}"
+}
+
+#
 # Keyring backend.
 #
 keyring_backend() {
@@ -182,6 +196,13 @@ eth_bridge_registry_address() {
 #
 eth_symbol_mapping() {
   ETH_SYMBOL_MAPPING="${1}"
+}
+
+#
+# Tail.
+#
+tail_count() {
+  TAIL_COUNT="${1}"
 }
 
 #

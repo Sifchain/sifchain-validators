@@ -24,6 +24,9 @@ run() {
   cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices "$GAS_PRICE"
 }
 
-setup
+if [ ! -f "${HOME}"/.sifnoded/config/genesis.json ]; then
+  setup
+fi
+
 cleanup
 run
