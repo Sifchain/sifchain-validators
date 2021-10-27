@@ -4,7 +4,7 @@
 
 #### Prerequisites / Dependencies:
 
-- Clone this repository (`git clone ssh://git@github.com/Sifchain/sifchain-validators`)
+- Clone this repository (`git clone https://github.com/Sifchain/sifchain-validators.git`)
 - [Docker](https://www.docker.com/get-started)
 - [jq](https://stedolan.github.io/jq/)
 
