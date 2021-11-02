@@ -14,14 +14,14 @@ setup() {
 # Cleanup.
 #
 cleanup() {
-  rm -rf "${HOME}"/.sifnoded/keyring*
+  rm -rf "${HOME}"/.sifnoded/keyring-test*
 }
 
 #
 # Run the node under cosmovisor.
 #
 run() {
-  cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices "$GAS_PRICE"
+  cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices "$GAS_PRICE" --x-crisis-skip-assert-invariants
 }
 
 if [ ! -f "${HOME}"/.sifnoded/config/genesis.json ]; then
