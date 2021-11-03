@@ -12,8 +12,7 @@ init() {
   docker_installed
 
   docker pull sifchain/wizard:latest 2>/dev/null &
-  pid=$!
-  spinner $pid "Please wait..."
+  echo "Please wait..."
   clear
 }
 

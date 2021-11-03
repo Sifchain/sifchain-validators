@@ -298,22 +298,3 @@ aws_configured() {
     AWS_CONFIGURED=false
   fi
 }
-
-#
-# Spinner.
-#
-spinner() {
-  spin='-\|/'
-
-  pid=$1
-  msg=$2
-
-  i=0
-  while kill -0 $pid 2>/dev/null
-  do
-    i=$(( (i+1) %4 ))
-    printf "\r${msg} ${spin:$i:1} "
-    sleep .1
-  done
-  printf "\r\n"
-}

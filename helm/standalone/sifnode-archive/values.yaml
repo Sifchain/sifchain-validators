@@ -57,7 +57,7 @@ service:
 
 persistence:
   enabled: true
-  size: 3000Gi
+  size: 5000Gi
   accessMode: ReadWriteOnce
 
 ingress:
@@ -71,9 +71,9 @@ ingress:
 resources:
   requests:
     cpu: 2
-    memory: 16Gi
-  limits:
     memory: 30Gi
+  limits:
+    memory: 60Gi
 
 autoscaling:
   enabled: false

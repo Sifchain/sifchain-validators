@@ -14,8 +14,7 @@ init() {
   cat "$(pwd)"/scripts/.logo
 
   docker pull sifchain/wizard:latest 2>/dev/null &
-  pid=$!
-  spinner $pid "Installing dependencies. Please wait..."
+  echo "Installing dependencies. Please wait..."
   clear
 }
 

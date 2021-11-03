@@ -28,8 +28,7 @@ init() {
 
   cat "$(pwd)"/scripts/.logo
   docker pull sifchain/sifnoded:"${CHAIN_ID}" 2>/dev/null &
-  pid=$!
-  spinner $pid "Installing dependencies. Please wait..."
+  echo "Installing dependencies. Please wait..."
 }
 
 #
