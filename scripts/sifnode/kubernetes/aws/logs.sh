@@ -34,8 +34,7 @@ init() {
   cat "$(pwd)"/scripts/.logo
 
   docker pull sifchain/wizard:latest 2>/dev/null &
-  pid=$!
-  spinner $pid "Please wait..."
+  echo "Please wait..."
   clear
 }
 
