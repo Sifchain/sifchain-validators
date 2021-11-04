@@ -1,4 +1,4 @@
-# Standalone
+# Standalone (Docker)
 
 ## Launch
 

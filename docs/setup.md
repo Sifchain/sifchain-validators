@@ -8,6 +8,14 @@
 - [Docker](https://www.docker.com/get-started)
 - [jq](https://stedolan.github.io/jq/)
 
+#### Hardware Requirements
+
+Whether you're using Kubernetes, Docker or building your own node manually, our hardware recommendations are as follows:
+
+* 4 vCPU (8 vCPU Recommended).
+* 16GB RAM (32GB Recommended).
+* 500GB SSD (1TB+ SSD Recommended).
+
 ### Kubernetes
 
 #### What is Kubernetes?
@@ -16,14 +24,14 @@ Kubernetes is an open-source container-orchestration system for automating appli
 
 #### Setup
 
-To launch a node with Kubernetes, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/kubernetes.md).
+To launch a node on Kubernetes (with our wizard), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/kubernetes.md).
 
 ### Standalone
 
 #### Docker
 
-Our standalone solution makes use of Docker and Docker Compose. Please note that while we provide the ability to run a standalone node with Docker, we strongly recommend Kubernetes as a deployment target. 
+To setup a standalone node with Docker (with our wizard), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/standalone/docker.md).
 
-#### Setup
+#### Manual
 
-To launch a standalone node, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/standalone.md).
+To setup a node manually, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/standalone/manual.md).

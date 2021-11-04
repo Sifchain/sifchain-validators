@@ -42,3 +42,4 @@ RUN apk add --update --no-cache $PACKAGES
 # Copy the compiled binaires over.
 COPY --from=cosmovisor /go/bin/cosmovisor /usr/bin/cosmovisor
 COPY --from=sifnode /go/bin/sifnoded /usr/bin/sifnoded
+COPY --from=sifnode /go/bin/sifgen /usr/bin/sifgen
