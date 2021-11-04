@@ -155,3 +155,5 @@ cosmovisor start --x-crisis-skip-assert-invariants
 ```
 
 and it'll start accordingly and sync from the height where the snapshot was taken (for BetaNet), or from genesis (for TestNet).
+
+It's *highly* recommended that you consider running `cosmovisor` under `systemd` or `supervisord`, or some other process control system.
