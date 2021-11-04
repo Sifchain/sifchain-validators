@@ -24,7 +24,7 @@ git checkout master && make clean install
 2. Install `cosmovisor`:
 
 ```console
-go get github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@latest
+go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@latest
 ```
 
 ## Setup
