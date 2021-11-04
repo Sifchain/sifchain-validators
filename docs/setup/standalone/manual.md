@@ -2,7 +2,7 @@
 
 ## Prerequisites / Dependencies:
 
-- Clone the repository (`git clone git@github.com:Sifchain/sifnode.git`)
+- Clone the repository (`git clone https://github.com/Sifchain/sifnode.git`)
 - [Golang 1.16+](https://golang.org/doc/install)
 
 ## Build
