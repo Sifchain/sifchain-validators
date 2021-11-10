@@ -23,7 +23,7 @@ git checkout master && make clean install
 
 For BetaNet (archive node):
 
-```
+```console
 git checkout betanet-0.9.0 && make clean install
 ```
 
