@@ -15,10 +15,16 @@ For TestNet:
 git checkout testnet-0.9.0 && make clean install
 ```
 
-For BetaNet:
+For BetaNet (non-archive node):
 
 ```console
 git checkout master && make clean install
+```
+
+For BetaNet (archive node):
+
+```
+git checkout betanet-0.9.0 && make clean install
 ```
 
 2. Install `cosmovisor`:
@@ -130,9 +136,7 @@ e.g.:
 sed -i -e "s/external_address = \"\"/external_address = \"1.23.45.56:26656\"/g" "${HOME}"/.sifnoded/config/config.toml
 ```
 
-6. Download the latest snapshot:
-
-_This is only for BetaNet. TestNet will synchronise from genesis._
+6. Download the latest snapshot if you intend on running a non-archive node on BetaNet (otherwise your node will sync from genesis):
 
 ```console
 snapshot=$(echo "sifchain_$(TZ=GMT date +'%Y-%m-%d').tar")
@@ -148,12 +152,18 @@ tar -xvf sifchain.tar
 
 ## Start
 
-To start your node, simply run:
+For BetaNet (non-archive node) or TestNet:
 
 ```console
 cosmovisor start --x-crisis-skip-assert-invariants
 ```
 
-and it'll start accordingly and sync from the height where the snapshot was taken (for BetaNet), or from genesis (for TestNet).
+For BetaNet (archive node):
+
+```console
+cosmovisor start --x-crisis-skip-assert-invariants --pruning nothing
+```
+
+and it'll start accordingly and sync from the height where the snapshot was taken (for a non-archive node on BetaNet), or from genesis (for an archive node for BetaNet or for TestNet).
 
 It's *highly* recommended that you consider running `cosmovisor` under `systemd` or `supervisord`, or some other process control system.
