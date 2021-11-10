@@ -5,29 +5,39 @@
 - Clone the repository (`git clone https://github.com/Sifchain/sifnode.git`)
 - [Golang 1.16+](https://golang.org/doc/install)
 
-## Build
+## sifnoded
 
-1. Compile and install `sifnoded`:
+### TestNet
 
-For TestNet:
+To compile and install, run:
 
 ```console
 git checkout testnet-0.9.0 && make clean install
 ```
 
-For BetaNet (non-archive node):
+### BetaNet
 
-```console
-git checkout master && make clean install
-```
+#### Archive node
 
-For BetaNet (archive node):
+To compile and install, run:
 
 ```console
 git checkout betanet-0.9.0 && make clean install
 ```
 
-2. Install `cosmovisor`:
+#### Non-archive node
+
+To compile and install, run:
+
+```console
+git checkout master && make clean install
+```
+
+## cosmovisor
+
+`cosmovisor` is a small process manager for Cosmos SDK application binaries that monitors the governance module for incoming chain upgrade proposals.
+
+To install, run:
 
 ```console
 go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@latest
@@ -136,7 +146,11 @@ e.g.:
 sed -i -e "s/external_address = \"\"/external_address = \"1.23.45.56:26656\"/g" "${HOME}"/.sifnoded/config/config.toml
 ```
 
-6. Download the latest snapshot if you intend on running a non-archive node on BetaNet (otherwise your node will sync from genesis):
+## Snapshot
+
+Currently only BetaNet has snapshots available, for non-archive nodes. An archive node on BetaNet or a full node on TestNet will sync from genesis.
+
+Download the latest snapshot:
 
 ```console
 snapshot=$(echo "sifchain_$(TZ=GMT date +'%Y-%m-%d').tar")
@@ -144,7 +158,7 @@ cd "${HOME}"/.sifnoded/data
 wget -O sifchain.tar http://135.181.60.250:8081/sifchain/"${snapshot}"
 ```
 
-and then unpack the snapshot:
+and then unpack as follows:
 
 ```console
 tar -xvf sifchain.tar
@@ -152,18 +166,24 @@ tar -xvf sifchain.tar
 
 ## Start
 
-For BetaNet (non-archive node) or TestNet:
+### TestNet
 
 ```console
 cosmovisor start --x-crisis-skip-assert-invariants
 ```
 
-For BetaNet (archive node):
+### BetaNet
+
+#### Archive node
 
 ```console
 cosmovisor start --x-crisis-skip-assert-invariants --pruning nothing
 ```
 
-and it'll start accordingly and sync from the height where the snapshot was taken (for a non-archive node on BetaNet), or from genesis (for an archive node for BetaNet or for TestNet).
+#### Non-archive node
 
-It's *highly* recommended that you consider running `cosmovisor` under `systemd` or `supervisord`, or some other process control system.
+```console
+cosmovisor start --x-crisis-skip-assert-invariants
+```
+
+It's *highly* recommended that you consider running `cosmovisor` under `systemd` or `supervisord`, or some other process control system of your choosing.
