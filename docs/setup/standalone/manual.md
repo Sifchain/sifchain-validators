@@ -22,7 +22,7 @@ git checkout testnet-0.9.0 && make clean install
 To compile and install, run:
 
 ```console
-git checkout betanet-0.9.0 && make clean install
+git checkout mainnet-0.9.0 && make clean install
 ```
 
 #### Non-archive node
