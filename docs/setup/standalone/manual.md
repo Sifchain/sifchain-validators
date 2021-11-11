@@ -56,7 +56,7 @@ cp "${GOPATH}"/bin/sifnoded "${HOME}"/.sifnoded/cosmovisor/genesis/bin
 2. Add the `cosmovisor` environment variables (recommend you set these up to be added when the instance boots):
 
 ```console
-export DAEMON_HOME=/root/.sifnoded
+export DAEMON_HOME="${HOME}"/.sifnoded
 export DAEMON_RESTART_AFTER_UPGRADE=true
 export DAEMON_ALLOW_DOWNLOAD_BINARIES=true
 export DAEMON_NAME=sifnoded
