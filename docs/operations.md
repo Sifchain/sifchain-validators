@@ -8,4 +8,4 @@ See [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/oper
 
 ### Docker
 
-See [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone.md).
+See [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone/docker.md).
