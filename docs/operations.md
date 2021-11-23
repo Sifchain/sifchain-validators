@@ -6,4 +6,6 @@ See [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/oper
 
 ## Standalone
 
+### Docker
+
 See [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone.md).
