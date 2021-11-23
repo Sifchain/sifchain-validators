@@ -58,7 +58,7 @@ cp "${GOPATH}"/bin/sifnoded "${HOME}"/.sifnoded/cosmovisor/genesis/bin
 ```console
 export DAEMON_HOME="${HOME}"/.sifnoded
 export DAEMON_RESTART_AFTER_UPGRADE=true
-export DAEMON_ALLOW_DOWNLOAD_BINARIES=true
+export DAEMON_ALLOW_DOWNLOAD_BINARIES=false
 export DAEMON_NAME=sifnoded
 export UNSAFE_SKIP_BACKUP=true
 ```
