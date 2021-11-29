@@ -1,6 +1,8 @@
-# Standalone (Manual)
+# Standalone
 
-## Staking
+## Manual
+
+### Staking
 
 In order to participate in consensus, you'll need to stake (bond) your node. On TestNet you can request funds from the faucet (just reach out to us on Discord [here](https://discord.gg/guygbU4a)). On BetaNet you'll need to purchase Rowan and transfer it to the address that corresponds to the mnemonic generated earlier.
 
