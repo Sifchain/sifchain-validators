@@ -1,12 +1,50 @@
-# Standalone (Manual)
+# Standalone
 
-## Staking
+## Docker
+
+### Staking
 
 In order to participate in consensus, you'll need to stake (bond) your node. On TestNet you can request funds from the faucet (just reach out to us on Discord [here](https://discord.gg/guygbU4a)). On BetaNet you'll need to purchase Rowan and transfer it to the address that corresponds to the mnemonic generated earlier.
 
 1. Log into your new node.
 
-2. Once logged in, stake your node:
+```bash
+CHAIN_ID=<chain_id> make sifnode-standalone-shell
+```
+
+where:
+
+|Param|Description|
+|-----|----------|
+|`<chain_id>`|The chain ID that your node is connected to (`sifchain-testnet-1` or `sifchain-1`).|
+
+e.g.:
+
+For TestNet:
+
+```bash
+CHAIN_ID=sifchain-testnet-1 make sifnode-standalone-shell
+```
+
+For BetaNet:
+
+```bash
+CHAIN_ID=sifchain-1 make sifnode-standalone-shell
+```
+
+2. Once logged in, import your mnemonic from the previous section:
+
+```bash
+sifnoded keys add <moniker> -i --recover --keyring-backend file
+```
+
+|Param|Description|
+|-----|----------|
+|`<moniker>`|The moniker or name of your node as it appears on the network.|
+
+_You will be prompted for a password. Please store this securely._
+
+3. Stake your node:
 
 ```bash
   sifnoded tx staking create-validator \
@@ -18,7 +56,7 @@ In order to participate in consensus, you'll need to stake (bond) your node. On 
   --chain-id <chain_id> \
   --min-self-delegation "1" \
   --gas <gas> \
-  --fee 100000000000000000rowan \
+  --gas-prices <gas_prices> \
   --moniker <moniker> \
   --from <moniker> \
   --node <node_rpc_address> \
@@ -36,6 +74,7 @@ where:
 |`<moniker>`|The moniker or name of your node as you want it to appear on the network.|
 |`<amount>`|The amount to stake, including the denomination (e.g.: `100000000rowan`). The precision used is 1e18.|
 |`<gas>`| The per-transaction gas limit (e.g.: `300000`).|
+|`<gas_prices>`|The minimum gas price to use  (e.g.: `0.5rowan`).|
 |`<node_rpc_address>`|The address to broadcast the transaction to (`tcp://rpc-testnet.sifchain.finance:80` for TestNet or `tcp://rpc.sifchain.finance:80`) for BetaNet.|
 
 e.g.:
@@ -52,7 +91,7 @@ For TestNet:
   --chain-id sifchain-testnet-1 \
   --min-self-delegation "1" \
   --gas 300000 \
-  --fee 100000000000000000rowan \
+  --fees 100000000000000000rowan \
   --moniker my-node \
   --from my-node \
   --node tcp://rpc-testnet.sifchain.finance:80 \
@@ -71,7 +110,7 @@ For BetaNet:
   --chain-id sifchain-1 \
   --min-self-delegation "1" \
   --gas 300000 \
-  --fee 100000000000000000rowan \
+  --fees 100000000000000000rowan \
   --moniker my-node \
   --from my-node \
   --node tcp://rpc.sifchain.finance:80 \
