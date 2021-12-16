@@ -2,8 +2,8 @@
 #
 # Sifchain.
 #
-
-. $(pwd)/scripts/globals.sh
+# . $(pwd)/scripts/globals.sh
+. $(pwd)/globals.sh
 
 #
 # Initialize.
@@ -21,8 +21,8 @@ init() {
 #
 run() {
   clear
-  cat "$(pwd)"/scripts/.logo
-
+  #cat "$(pwd)"/scripts/.logo
+ cat "$(pwd)"/.logo
   mount_aws "$(pwd)"
   mount_terraform "$(pwd)"
   mount_kube "$(pwd)"
@@ -37,3 +37,4 @@ run() {
 
 init
 run
+}
