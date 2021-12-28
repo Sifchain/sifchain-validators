@@ -3,7 +3,7 @@
 # Sifchain.
 #
 
-. $(pwd) ../scripts/globals.sh
+. $(pwd) ../../scripts/globals.sh
 
 #
 # Usage.

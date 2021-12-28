@@ -37,4 +37,3 @@ run() {
 
 init
 run
-}
