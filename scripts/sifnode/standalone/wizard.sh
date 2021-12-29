@@ -3,7 +3,7 @@
 # Sifchain.
 #
 
-. $(pwd) ../../scripts/globals.sh
+. $(pwd)/scripts/globals.sh
 
 #
 # Usage.
@@ -26,7 +26,7 @@ EOF
 init() {
   docker_installed
 
-  cat "$(pwd)"../../scripts/.logo
+  cat "$(pwd)"/scripts/.logo
   docker pull sifchain/sifnoded:"${CHAIN_ID}" 2>/dev/null &
   echo "Installing dependencies. Please wait..."
 }
@@ -73,7 +73,7 @@ sifnode_bind_ip_address() {
 #
 launch() {
   clear
-  cat "$(pwd)"../../scripts/.logo
+  cat "$(pwd)"/scripts/.logo
 
   CHAIN_ID="${CHAIN_ID}" \
   MONIKER="${MONIKER:-'default'}" \
@@ -88,7 +88,7 @@ launch() {
 #
 sifnode_summary() {
   clear
-  cat "$(pwd)"../../scripts/.logo
+  cat "$(pwd)"/scripts/.logo
   cat <<- EOF
 
 Summary
@@ -113,7 +113,7 @@ new() {
     rm -rf "$(pwd)"/docker/sifchain/"${CHAIN_ID}"/.sifnoded
   fi
 
-  cat "$(pwd)"../../scripts/.logo
+  cat "$(pwd)"/scripts/.logo
 
   sifnode_mnemonic
   sifnode_moniker
@@ -139,7 +139,7 @@ new() {
 #
 run() {
   clear
-  cat "$(pwd)"../../scripts/.logo
+  cat "$(pwd)"/scripts/.logo
   cat <<- EOF
 
 Sifchain
