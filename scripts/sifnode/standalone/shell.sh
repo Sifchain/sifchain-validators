@@ -1,9 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/sh
+##!/usr/bin/env sh
 #
 # Sifchain.
 #
 
-. $(pwd) ../scripts/globals.sh
+. $(pwd)/scripts/globals.sh
 
 #
 # Usage.

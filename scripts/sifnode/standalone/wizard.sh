@@ -1,4 +1,5 @@
-#!/usr/bin/env sh
+#!/bin/sh
+##!/usr/bin/env sh
 #
 # Sifchain.
 #
@@ -66,6 +67,7 @@ sifnode_gas_prices() {
 sifnode_bind_ip_address() {
   read -p "Enter the IP address that your node should advertise to the rest of the network [127.0.0.1]: " BIND_IP_ADDRESS
   BIND_IP_ADDRESS=${BIND_IP_ADDRESS:-127.0.0.1}
+
 }
 
 #
@@ -121,10 +123,10 @@ new() {
   sifnode_bind_ip_address
   sifnode_summary
 
-  read -p "Are these details correct? (y/n): " -n 1 -r
-  echo
+  read -p "Are these details correct? (y/n): " CORRECT
+  echo 
 
-  if [ "${REPLY}" = "y" ]; then
+  if [ "${CORRECT}" = "y" ]; then
     echo "Launching...."
     launch
   else
@@ -151,10 +153,10 @@ network within a couple of minutes.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " REPLY #-n 1 -r
 
   if [ "${REPLY}" = "n" ]; then
-    clear
+    #clear
     printf "\nExiting. Goodbye.\n"
     exit 0
   fi

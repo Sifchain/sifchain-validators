@@ -1,9 +1,10 @@
-#!/usr/bin/env sh
+#!/bin/sh
+##!/usr/bin/env sh
 #
 # Sifchain.
 #
 
-. $(pwd) ../scripts/globals.sh
+. $(pwd)/scripts/globals.sh
 
 #
 # Usage.
@@ -141,7 +142,7 @@ sifnode_in_sync() {
 #
 sifnode_summary() {
   clear
-  cat "$(pwd)" ../scripts/.logo
+  cat "$(pwd)"/scripts/.logo
 
   cat <<- EOF
 

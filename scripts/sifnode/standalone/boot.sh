@@ -1,9 +1,9 @@
-#!/usr/bin/env sh
-#
+#!/bin/sh
+##!/usr/bin/env sh
 # Sifchain.
 #
 
-. $(pwd) ../scripts/globals.sh
+. $(pwd)/scripts/globals.sh
 
 #
 # Usage.
@@ -44,7 +44,7 @@ setup() {
 # Run.
 #
 run() {
-  clear
+  #clear
   cat "$(pwd)"/scripts/.logo
 
   if [ -d "$(pwd)"/docker/sifchain/"${CHAIN_ID}"/.sifnoded ]; then
