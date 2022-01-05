@@ -12,7 +12,7 @@ This repository contains helm charts, terraform recipes, scripts and other tooli
 
 ### Setup
 
-To run a validator node using the tooling developed by Sifchain, on either TestNet or BetaNet, then please see the instructions [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup.md).
+To run a validator node using the tooling developed by Sifchain, on either TestNet or BetaNet, then please see the instructions [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup.md).
 
 ## Relayers
 
