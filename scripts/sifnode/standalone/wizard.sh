@@ -72,15 +72,21 @@ sifnode_bind_ip_address() {
 # Launch.
 #
 launch() {
-  export CHAIN_ID="${CHAIN_ID}"
-  export MONIKER="${MONIKER}"
-  export MNEMONIC="$(echo "${MNEMONIC}" | base64)"
-  export GAS_PRICES="${GAS_PRICES}"
-  export BIND_IP_ADDRESS="${BIND_IP_ADDRESS}"
-
   clear
   cat "$(pwd)"/scripts/.logo
 
+  os=$(uname -a | grep Darwin)
+  if [ -z "${os}" ]; then
+    export ENC_MNEMONIC="$(echo "${MNEMONIC}" | base64 -w 0)"
+  else
+    export ENC_MNEMONIC="$(echo "${MNEMONIC}" | base64 -b 0)"
+  fi
+
+  CHAIN_ID="${CHAIN_ID}" \
+  MONIKER="${MONIKER:-'default'}" \
+  MNEMONIC="${ENC_MNEMONIC}" \
+  GAS_PRICES="${GAS_PRICES:-0.5rowan}" \
+  BIND_IP_ADDRESS="${BIND_IP_ADDRESS:-127.0.0.1}" \
   make -C "$(dirname "${0}")"/../../../ sifnode-standalone-boot
 }
 
