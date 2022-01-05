@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 #
 # Sifchain.
 #
@@ -27,7 +27,7 @@ init() {
   docker_installed
 
   cat "$(pwd)"/scripts/.logo
-  docker pull sifchain/sifnoded:"${CHAIN_ID}" 2>/dev/null &
+  docker pull sifchain/sifnoded:"${CHAIN_ID}"
   echo "Installing dependencies. Please wait..."
 }
 
