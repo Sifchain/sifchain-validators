@@ -74,13 +74,18 @@ sifnode_bind_ip_address() {
 launch() {
   clear
   cat "$(pwd)"/scripts/.logo
+  cat <<- EOF
 
-  echo CHAIN_ID="${CHAIN_ID}" \
-  MONIKER="${MONIKER:-'default'}" \
-  MNEMONIC="$(echo "${MNEMONIC}" | base64)" \
-  GAS_PRICES="${GAS_PRICES:-0.5rowan}" \
-  BIND_IP_ADDRESS="${BIND_IP_ADDRESS:-127.0.0.1}" \
-  make -C "$(dirname "${0}")"/../../../ sifnode-standalone-boot
+To launch your validator for the first time, please run:
+
+CHAIN_ID="${CHAIN_ID}" \\
+MONIKER="${MONIKER}" \\
+MNEMONIC="$(echo "${MNEMONIC}" | base64)" \\
+GAS_PRICES="${GAS_PRICES}" \\
+BIND_IP_ADDRESS="${BIND_IP_ADDRESS}" \\
+make sifnode-standalone-boot
+
+EOF
 }
 
 #
