@@ -121,10 +121,10 @@ new() {
   sifnode_bind_ip_address
   sifnode_summary
 
-  read -p "Are these details correct? (y/n): " -n 1 -r
+  read -p "Are these details correct? (y/n): " OUTPUT
   echo
 
-  if [ "${REPLY}" = "y" ]; then
+  if [ "${OUTPUT}" = "y" ]; then
     echo "Launching...."
     launch
   else
