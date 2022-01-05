@@ -75,7 +75,7 @@ launch() {
   clear
   cat "$(pwd)"/scripts/.logo
 
-  CHAIN_ID="${CHAIN_ID}" \
+  echo CHAIN_ID="${CHAIN_ID}" \
   MONIKER="${MONIKER:-'default'}" \
   MNEMONIC="$(echo "${MNEMONIC}" | base64)" \
   GAS_PRICES="${GAS_PRICES:-0.5rowan}" \
