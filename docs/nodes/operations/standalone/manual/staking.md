@@ -8,9 +8,29 @@ In order to participate in consensus, you'll need to stake (bond) your node. On 
 
 1. Log into your new node.
 
-2. Once logged in, stake your node:
+2. Generate a new key (if you haven't already):
 
-```bash
+```console
+sifnoded keys add <moniker> --keyring-backend file
+```
+
+where:
+
+|Param|Description|
+|-----|----------|
+|`<moniker>`|The moniker or name of your node.|
+
+e.g.:
+
+```console
+sifnoded keys add my-node --keyring-backend file
+```
+
+_Please ensure you save the `mnemonic` and the keyring password you entered somewhere secure._
+
+3. Now, stake your node:
+
+```console
   sifnoded tx staking create-validator \
   --commission-max-change-rate <commission_max_change_rate> \
   --commission-max-rate <commission_max_rate> \
@@ -44,7 +64,7 @@ e.g.:
 
 For TestNet:
 
-```bash
+```console
   sifnoded tx staking create-validator \
   --commission-max-change-rate 0.1 \
   --commission-max-rate 0.1 \
@@ -63,7 +83,7 @@ For TestNet:
 
 For BetaNet:
 
-```bash
+```console
   sifnoded tx staking create-validator \
   --commission-max-change-rate 0.1 \
   --commission-max-rate 0.1 \

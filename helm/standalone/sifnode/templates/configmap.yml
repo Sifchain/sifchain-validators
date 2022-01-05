@@ -195,4 +195,4 @@ data:
     MINIMUM_GAS_PRICES=$1
     ADDITIONAl_ARGS=$2
 
-    cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices ${MINIMUM_GAS_PRICES} --x-crisis-skip-assert-invariants ${ADDITIONAl_ARGS}
+    cosmovisor start --rpc.laddr tcp://0.0.0.0:26657 --minimum-gas-prices ${MINIMUM_GAS_PRICES} --x-crisis-skip-assert-invariants --inv-check-period 600 ${ADDITIONAl_ARGS}
