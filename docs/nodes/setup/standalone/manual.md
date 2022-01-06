@@ -187,3 +187,7 @@ cosmovisor start --x-crisis-skip-assert-invariants
 ```
 
 It's *highly* recommended that you consider running `cosmovisor` under `systemd` or `supervisord`, or some other process control system of your choosing.
+
+## Stake
+
+In order to participate in consensus, you'll need to stake your node. Please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/manual/staking.md) for further instructions.

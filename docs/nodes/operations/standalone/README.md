@@ -4,11 +4,11 @@ The links below are a collection of common use cases, for managing a sifnode con
 
 ## Docker
 
-* [Boot](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone/docker/boot.md)
-* [Staking](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone/docker/staking.md)
-* [Status](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone/docker/status.md)
-* [Terminal](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone/docker/terminal.md)
+* [Boot](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/docker/boot.md)
+* [Staking](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/docker/staking.md)
+* [Status](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/docker/status.md)
+* [Terminal](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/docker/terminal.md)
 
 ## Manual
 
-* [Staking](https://github.com/Sifchain/sifchain-validators/tree/master/docs/operations/standalone/manual/staking.md)
+* [Staking](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/manual/staking.md)
