@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 #
 # Sifchain.
 #
@@ -27,7 +27,7 @@ init() {
   docker_installed
 
   cat "$(pwd)"/scripts/.logo
-  docker pull sifchain/sifnoded:"${CHAIN_ID}" 2>/dev/null &
+  docker pull sifchain/sifnoded:"${CHAIN_ID}"
   echo "Installing dependencies. Please wait..."
 }
 
@@ -75,9 +75,16 @@ launch() {
   clear
   cat "$(pwd)"/scripts/.logo
 
+  os=$(uname -a | grep Darwin)
+  if [ -z "${os}" ]; then
+    export ENC_MNEMONIC="$(echo "${MNEMONIC}" | base64 -w 0)"
+  else
+    export ENC_MNEMONIC="$(echo "${MNEMONIC}" | base64 -b 0)"
+  fi
+
   CHAIN_ID="${CHAIN_ID}" \
   MONIKER="${MONIKER:-'default'}" \
-  MNEMONIC="$(echo "${MNEMONIC}" | base64)" \
+  MNEMONIC="${ENC_MNEMONIC}" \
   GAS_PRICES="${GAS_PRICES:-0.5rowan}" \
   BIND_IP_ADDRESS="${BIND_IP_ADDRESS:-127.0.0.1}" \
   make -C "$(dirname "${0}")"/../../../ sifnode-standalone-boot
@@ -121,10 +128,10 @@ new() {
   sifnode_bind_ip_address
   sifnode_summary
 
-  read -p "Are these details correct? (y/n): " -n 1 -r
+  read -p "Are these details correct? (y/n): " OUTPUT
   echo
 
-  if [ "${REPLY}" = "y" ]; then
+  if [ "${OUTPUT}" = "y" ]; then
     echo "Launching...."
     launch
   else

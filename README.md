@@ -6,13 +6,17 @@ Sifchain is the omni-chain solution for DEXes. More performant, more robust cryp
 
 ## Overview
 
-This repository contains helm charts, terraform recipes, scripts and other tooling for running and operating a validator for Sifchain.
+This repository contains helm charts, terraform recipes, scripts and other tooling for running and operating a validator or relayer for Sifchain.
 
-## Run a validator
+## Nodes
 
 ### Setup
 
-To run a validator using the tooling developed by Sifchain, on either TestNet or BetaNet, then please see the instructions [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup.md).
+To run a validator node using the tooling developed by Sifchain, on either TestNet or BetaNet, then please see the instructions [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup.md).
+
+## Relayers
+
+Relayer related documentation can be found [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/relayers/README.md).
 
 ## Network Information
 
