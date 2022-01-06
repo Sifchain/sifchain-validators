@@ -10,7 +10,7 @@ There are several options for running a relayer, including:
 * [hermes](https://github.com/informalsystems/ibc-rs)
 * [ts-relayer](https://github.com/confio/ts-relayer)
 
-Sifchain recommends `hermes`. 
+Sifchain recommends `hermes`. It's also recommended that you use the `hermes` template config as found [here](https://github.com/Sifchain/networks/tree/master/betanet/sifchain-1/config/ibc/hermes/config.toml).
 
 ## Channels
 
