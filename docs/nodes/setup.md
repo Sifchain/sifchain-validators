@@ -24,14 +24,14 @@ Kubernetes is an open-source container-orchestration system for automating appli
 
 #### Setup
 
-To launch a node on Kubernetes (with our wizard), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/kubernetes.md).
+To launch a node on Kubernetes (with our wizard), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/kubernetes.md).
 
 ### Standalone
 
 #### Docker
 
-To setup a standalone node with Docker (with our wizard), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/standalone/docker.md).
+To setup a standalone node with Docker (with our wizard), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/standalone/docker.md).
 
 #### Manual
 
-To setup a node manually, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/setup/standalone/manual.md).
+To setup a node manually, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/standalone/manual.md).
