@@ -34,4 +34,4 @@ To setup a standalone node with Docker (with our wizard), please see [here](http
 
 #### Manual
 
-To setup a node manually, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/standalone/manual.md).
+To setup a node manually (standalone VPS or bare metal), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/standalone/manual.md).
