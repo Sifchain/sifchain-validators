@@ -14,7 +14,7 @@ Whether you're using Kubernetes, Docker or building your own node manually, our 
 
 * 4 vCPU (8 vCPU Recommended).
 * 16GB RAM (32GB Recommended).
-* 500GB SSD (1TB+ SSD Recommended).
+* 500GB SSD (1TB+ NVMe SSD Recommended).
 
 ### Kubernetes
 
