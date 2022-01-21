@@ -153,7 +153,7 @@ Currently only BetaNet has snapshots available, for non-archive nodes. An archiv
 Download the latest snapshot:
 
 ```console
-snapshot=$(echo "sifchain_$(TZ=GMT date +'%Y-%m-%d').tar")
+snapshot=$(echo "sifchain-1_$(TZ=GMT date +'%Y-%m-%d').tar")
 cd "${HOME}"/.sifnoded/data
 wget -O sifchain.tar http://135.181.60.250:8081/sifchain/"${snapshot}"
 ```
