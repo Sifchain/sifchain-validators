@@ -1,12 +1,12 @@
 """
 Description: This script looks up information about a chain with a basic init of the class.
 """
-from library.cosmos_ibc import CosmosIBC
+from lib.CosmosIBC import CosmosIBC
 
 """
 Here you will pass (<binary_name>, <rpc_node>, <api_node>)
 """
-cosmos_helper = CosmosIBC("akash", "http://akash.development.sifchain.finance:26657", "http://akash.development.sifchain.finance:1317")
+cosmos_helper = CosmosIBC("akash", "https://rpc.sifchain.finance:443", "https://api.sifchain.finance")
 
 rpc_active, up_to_date = cosmos_helper.check_rpc_node_in_sync()
 

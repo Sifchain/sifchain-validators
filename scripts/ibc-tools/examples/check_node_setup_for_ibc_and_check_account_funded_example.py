@@ -7,7 +7,7 @@ These tools are designed to provide a helping hand to automating what it takes f
 for a network.
 """
 
-from library.cosmos_ibc import CosmosIBC
+from lib.CosmosIBC import CosmosIBC
 
 """
 Initialize the Python Library.

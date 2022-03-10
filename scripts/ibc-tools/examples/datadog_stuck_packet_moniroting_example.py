@@ -4,7 +4,7 @@ Description: This script takes a list of external RPC nodes, internal RPC and AP
 and destination channels and connections and monitors the IBC queues for stuck transactions and pushes them into datadog.
 """
 
-from library.cosmos_ibc import CosmosIBC
+from lib.CosmosIBC import CosmosIBC
 import os
 import datetime
 import time

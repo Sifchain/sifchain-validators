@@ -2,7 +2,7 @@
 Description: This script is an example of how to do recursive rpc event queries to get every available page of output for query.
 """
 
-from library.cosmos_ibc import CosmosIBC
+from lib.CosmosIBC import CosmosIBC
 
 """
 Here you will pass (<binary_name>, <rpc_node>, <api_node>)

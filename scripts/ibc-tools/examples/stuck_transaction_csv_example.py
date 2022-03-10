@@ -2,7 +2,7 @@
 Description: This script will check for stuck IBC transactions and print them in CSV format for the list specified.
 """
 
-from library.cosmos_ibc import CosmosIBC
+from lib.CosmosIBC import CosmosIBC
 
 """
 This is the list of IBC Connections to Check

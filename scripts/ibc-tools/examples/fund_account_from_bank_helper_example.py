@@ -2,7 +2,7 @@
 Description: This script takes two mnemonics and monikers one for the bank account, one for the destination account. This will then
 fund the destination account form the bank with the ammount specified.
 """
-from library.cosmos_ibc import CosmosIBC
+from lib.CosmosIBC import CosmosIBC
 import time
 
 """
