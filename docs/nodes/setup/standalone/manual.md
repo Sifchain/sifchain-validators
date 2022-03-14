@@ -30,7 +30,7 @@ git checkout mainnet-0.9.0 && make clean install
 To compile and install, run:
 
 ```console
-git checkout v0.10.1 && make clean install
+git checkout v0.11.0 && make clean install
 ```
 
 ## cosmovisor
@@ -169,7 +169,7 @@ tar -xvf sifchain.tar
 ### TestNet
 
 ```console
-cosmovisor start --x-crisis-skip-assert-invariants
+cosmovisor start
 ```
 
 ### BetaNet
@@ -177,13 +177,13 @@ cosmovisor start --x-crisis-skip-assert-invariants
 #### Archive node
 
 ```console
-cosmovisor start --x-crisis-skip-assert-invariants --pruning nothing
+cosmovisor start --pruning nothing
 ```
 
 #### Non-archive node
 
 ```console
-cosmovisor start --x-crisis-skip-assert-invariants
+cosmovisor start
 ```
 
 It's *highly* recommended that you consider running `cosmovisor` under `systemd` or `supervisord`, or some other process control system of your choosing.
