@@ -29,7 +29,7 @@ init() {
 
   cat "$(pwd)"/scripts/.logo
 
-  docker pull sifchain/wizard:latest 2>/dev/null &
+  docker pull sifchain/wizard:latest
   echo "Installing dependencies. Please wait..."
   clear
 }
@@ -67,9 +67,9 @@ Please note: at present only AWS is supported by this wizard.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -102,9 +102,9 @@ AWS Secret Access Key: ${aws_secret_access_key}
 AWS Region: ${PROVIDER_REGION}
 EOF
       printf "\n\n"
-      read -p "Would you like to continue? (y/n): " -n 1 -r
+      read -p "Would you like to continue? (y/n): " OUTPUT
 
-      if [ "${REPLY}" = "n" ]; then
+      if [ "${OUTPUT}" = "n" ]; then
         clear
         printf "\nExiting. Goodbye.\n"
         exit 0
@@ -136,9 +136,9 @@ https://www.terraform.io
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -152,7 +152,7 @@ EOF
 # Cluster name.
 #
 terraform_cluster_name() {
-  default=$(echo "${RANDOM}" | tr '0-9' '[:lower:]')
+  default=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 4 | xargs)
   read -p "Enter the name for your cluster: [sifchain-${default}]: " CLUSTER_NAME
   CLUSTER_NAME=${CLUSTER_NAME:-sifchian-${default}}
 }
@@ -201,9 +201,9 @@ Instance type: ${INSTANCE_TYPE}
 EOF
 
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -256,9 +256,9 @@ In this step we'll configure and deploy a new sifnode instance.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -336,9 +336,9 @@ PLEASE REMEMBER TO STORE YOUR MNEMONIC SOMEWHERE SECURE!
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -386,10 +386,10 @@ genesis_url() {
 persistent_peers() {
   case "${CHAIN_ID}" in
     sifchain-1)
-      PERSISTENT_PEERS=MGQ0OTgxYmRhZjRkNWQ3M2JhZDAwYWYzYjFmYTlkNjk5ZTRkM2JjMEA0NC4yMzUuMTA4LjQxOjI2NjU2LGJjYzJkMDdhMTRhOGEwYjNhYTIwMmU5YWMxMDZkZWMwYmVmOTFmZGFAMTMuNTUuMjQ3LjYwOjI2NjU2LDY2M2RlYzY1Yjc1NGFjZWVmNWZjY2NiODY0MDQ4MzA1MjA4ZTdlYjJAMzQuMjQ4LjExMC44ODoyNjY1NiwwMTIwZjBhNDhlN2U4MWNjOTg4MjllZjRmNWIzOTQ4MGYxMWVjZDVhQDUyLjc2LjE4NS4xNzoyNjY1Niw2NTM1NDk3ZjAxNTIyOTNkNzczMTA4Nzc0YTcwNWI4NmMyMjQ5YTljQDQ0LjIzOC4xMjEuNjU6MjY2NTYsZmRmNWNmZmMyYjIwYTIwZmFiOTU0ZDNiNjc4NWU5YzM4Mjc2MmQxNEAzNC4yNTUuMTMzLjI0ODoyNjY1Niw4YzI0MGY3MWY5ZTA2MDI3N2NlMThkYzA5ZDgyZDNiYmIwNWQxOTcyQDEzLjIxMS40My4xNzc6MjY2NTYsOWZiY2I2YmQ1YTdmMjBhNzE2NTY0MTU3YzRmNjI5NmQyZmFmNWY2NEAxOC4xMzguMjA4Ljk1OjI2NjU2Cg==
+      PERSISTENT_PEERS=MGQ0OTgxYmRhZjRkNWQ3M2JhZDAwYWYzYjFmYTlkNjk5ZTRkM2JjMEA0NC4yMzUuMTA4LjQxOjI2NjU2LGJjYzJkMDdhMTRhOGEwYjNhYTIwMmU5YWMxMDZkZWMwYmVmOTFmZGFAMTMuNTUuMjQ3LjYwOjI2NjU2LDY2M2RlYzY1Yjc1NGFjZWVmNWZjY2NiODY0MDQ4MzA1MjA4ZTdlYjJAMzQuMjQ4LjExMC44ODoyNjY1NiwwMTIwZjBhNDhlN2U4MWNjOTg4MjllZjRmNWIzOTQ4MGYxMWVjZDVhQDUyLjc2LjE4NS4xNzoyNjY1Ng==
       ;;
     sifchain-testnet-1)
-      PERSISTENT_PEERS=YzQxNDBjNTU0NzA2NjE5M2JkMjA3NjVhODA1MGU1NjQyZDJhMDJmZkA1NC44NS4zOS4xOTM6MjY2NTYsNzA0NWFmYjZkY2Y5ZjMwMWIyOWRmYjA4ZTA4OTM5YjNjM2ZhNzRhNkA1NC4yMTEuNDEuOTY6MjY2NTYsZmY2NDgxNDY4MzY4ZmNiMTRjNjU3ZTAwNzllNzc5MTU5OTcxMGJlN0A1NC4xNjIuMi4yNTU6MjY2NTYsM2ZiODRiZjBkMzFlN2VlOGM1MTJiMGU2ZjgyZmJiYTcwNTFmM2YxZkA1NC4xNTguMTIxLjE4NjoyNjY1Ng==
+      PERSISTENT_PEERS=ZGZjYjg4ZjU1NTc0ZWJiMGM5OGFhZDk3MmY5ZmE2YWU5M2Q2ZDM4NUAzLjIxOS45MS4xMzc6MjY2NTYsZmNlMzg0NWJiMDIxNDI4YzBmZjE3NDc4NGUyMTMzMjA3MzBmYjlhZEAzNC4yMzIuMjA5LjE2NToyNjY1NiwwYTNmNTE5ZDI5YmNmMjAyODdiZTcwY2JhYTk4MmIzN2ZiYWY1MDIyQDMuOTMuMTIwLjEzMToyNjY1Niw1ZDYyNzY4OWZkODQ5YTM3YTdiYmY4MThjYWVkMjliZjFjYzNlN2U1QDE4NC43Mi4xNjkuMTk3OjI2NjU2
       ;;
     *)
       ;;
@@ -415,13 +415,20 @@ sifnode_deploy() {
   genesis_url
   persistent_peers
 
+  os=$(uname -a | grep Darwin)
+  if [ -z "${os}" ]; then
+    export ENC_MNEMONIC="$(echo "${MNEMONIC}" | base64 -w 0)"
+  else
+    export ENC_MNEMONIC="$(echo "${MNEMONIC}" | base64 -b 0)"
+  fi
+
   docker run -it \
   -e CHAIN_ID="${CHAIN_ID}" \
   -e NAMESPACE=sifnode \
   -e DOCKER_IMAGE="sifchain/sifnoded" \
   -e DOCKER_IMAGE_TAG="${CHAIN_ID}" \
   -e MONIKER="${MONIKER}" \
-  -e MNEMONIC="$(echo "${MNEMONIC}" | base64)" \
+  -e MNEMONIC="${ENC_MNEMONIC}" \
   -e PEER_ADDRESS="${PERSISTENT_PEERS}" \
   -e GENESIS_URL=${GENESIS_URL} \
   -e ENABLE_API_ACCESS=true \
@@ -454,9 +461,9 @@ This process will take roughly 45 minutes to complete.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
