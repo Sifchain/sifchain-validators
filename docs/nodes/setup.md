@@ -14,7 +14,7 @@ Whether you're using Kubernetes, Docker or building your own node manually, our 
 
 * 4 vCPU (8 vCPU Recommended).
 * 16GB RAM (32GB Recommended).
-* 500GB SSD (1TB+ SSD Recommended).
+* 500GB SSD (1TB+ NVMe SSD Recommended).
 
 ### Kubernetes
 
@@ -34,4 +34,4 @@ To setup a standalone node with Docker (with our wizard), please see [here](http
 
 #### Manual
 
-To setup a node manually, please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/standalone/manual.md).
+To setup a node manually (standalone VPS or bare metal), please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/setup/standalone/manual.md).

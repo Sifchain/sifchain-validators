@@ -30,7 +30,7 @@ git checkout mainnet-0.9.0 && make clean install
 To compile and install, run:
 
 ```console
-git checkout v0.9.14 && make clean install
+git checkout v0.10.1 && make clean install
 ```
 
 ## cosmovisor
@@ -153,7 +153,7 @@ Currently only BetaNet has snapshots available, for non-archive nodes. An archiv
 Download the latest snapshot:
 
 ```console
-snapshot=$(echo "sifchain_$(TZ=GMT date +'%Y-%m-%d').tar")
+snapshot=$(echo "sifchain-1_$(TZ=GMT date +'%Y-%m-%d').tar")
 cd "${HOME}"/.sifnoded/data
 wget -O sifchain.tar http://135.181.60.250:8081/sifchain/"${snapshot}"
 ```
