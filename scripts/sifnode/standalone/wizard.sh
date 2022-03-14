@@ -158,9 +158,9 @@ network within a couple of minutes.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -168,9 +168,9 @@ EOF
 
   if [ -d "$(pwd)"/docker/sifchain/"${CHAIN_ID}"/.sifnoded ]; then
     printf "\n\n"
-    read -p "Detected an existing configuration. Would you like to run that now? [If not, it'll be deleted] (y/n): " -n 1 -r
+    read -p "Detected an existing configuration. Would you like to run that now? [If not, it'll be deleted] (y/n): " OUTPUT
 
-    if [ "${REPLY}" = "y" ]; then
+    if [ "${OUTPUT}" = "y" ]; then
       echo "Launching...."
       launch "${1}"
       exit 0

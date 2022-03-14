@@ -67,9 +67,9 @@ Please note: at present only AWS is supported by this wizard.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -102,9 +102,9 @@ AWS Secret Access Key: ${aws_secret_access_key}
 AWS Region: ${PROVIDER_REGION}
 EOF
       printf "\n\n"
-      read -p "Would you like to continue? (y/n): " -n 1 -r
+      read -p "Would you like to continue? (y/n): " OUTPUT
 
-      if [ "${REPLY}" = "n" ]; then
+      if [ "${OUTPUT}" = "n" ]; then
         clear
         printf "\nExiting. Goodbye.\n"
         exit 0
@@ -136,9 +136,9 @@ https://www.terraform.io
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -201,9 +201,9 @@ Instance type: ${INSTANCE_TYPE}
 EOF
 
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -256,9 +256,9 @@ In this step we'll configure and deploy a new sifnode instance.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -336,9 +336,9 @@ PLEASE REMEMBER TO STORE YOUR MNEMONIC SOMEWHERE SECURE!
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
@@ -454,9 +454,9 @@ This process will take roughly 45 minutes to complete.
 
 EOF
   printf "\n\n"
-  read -p "Would you like to continue? (y/n): " -n 1 -r
+  read -p "Would you like to continue? (y/n): " OUTPUT
 
-  if [ "${REPLY}" = "n" ]; then
+  if [ "${OUTPUT}" = "n" ]; then
     clear
     printf "\nExiting. Goodbye.\n"
     exit 0
