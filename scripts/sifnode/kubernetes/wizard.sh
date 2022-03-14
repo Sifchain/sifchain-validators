@@ -29,7 +29,7 @@ init() {
 
   cat "$(pwd)"/scripts/.logo
 
-  docker pull sifchain/wizard:latest 2>/dev/null &
+  docker pull sifchain/wizard:latest
   echo "Installing dependencies. Please wait..."
   clear
 }
