@@ -109,7 +109,7 @@ spec:
             - name: DAEMON_RESTART_AFTER_UPGRADE
               value: "{{ .Values.sifnode.env.daemonRestartAfterUpgrade }}"
             - name: UNSAFE_SKIP_BACKUP
-              value: true
+              value: "true"
           livenessProbe:
             tcpSocket:
               port: 26657
