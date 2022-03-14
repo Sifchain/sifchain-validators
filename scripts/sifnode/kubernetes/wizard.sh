@@ -152,7 +152,7 @@ EOF
 # Cluster name.
 #
 terraform_cluster_name() {
-  default=$(echo "${RANDOM}" | tr '0-9' '[:lower:]')
+  default=$(LC_CTYPE=C tr -dc A-Za-z0-9 < /dev/urandom | head -c 4 | xargs)
   read -p "Enter the name for your cluster: [sifchain-${default}]: " CLUSTER_NAME
   CLUSTER_NAME=${CLUSTER_NAME:-sifchian-${default}}
 }
