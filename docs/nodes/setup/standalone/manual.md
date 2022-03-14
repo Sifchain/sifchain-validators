@@ -40,7 +40,7 @@ git checkout v0.11.0 && make clean install
 To install, run:
 
 ```console
-go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@latest
+go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0
 ```
 
 ## Setup
