@@ -101,7 +101,7 @@ sifnoded init my-node --chain-id sifchain-1
 For TestNet:
 
 ```console
-cd "${HOME}"/sifnoded/config
+cd "${HOME}"/.sifnoded/config
 wget -O genesis.json.gz https://raw.githubusercontent.com/Sifchain/networks/master/testnet/sifchain-testnet-1/genesis.json.gz
 gunzip genesis.json.gz
 ```
