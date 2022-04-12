@@ -195,14 +195,7 @@ In order to participate in consensus, you'll need to stake your node. Please see
 
 
 
-
-
-
-
-
-
-
-
+<br/><br/><br/><br/><br/><br/>
 
 
 
