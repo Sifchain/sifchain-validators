@@ -195,10 +195,10 @@ In order to participate in consensus, you'll need to stake your node. Please see
 
 
 
-<br/><br/>
+<br/>
 
 
 
-## TUTORIALS
+## Tutorials
 
 You can also get further details by looking into [tutorial on how to set up a standalone validator](https://docs.sifchain.finance/developers/tutorials/setup-standalone-validator-node-manually)
