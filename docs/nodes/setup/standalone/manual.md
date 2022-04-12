@@ -191,3 +191,8 @@ It's *highly* recommended that you consider running `cosmovisor` under `systemd`
 ## Stake
 
 In order to participate in consensus, you'll need to stake your node. Please see [here](https://github.com/Sifchain/sifchain-validators/tree/master/docs/nodes/operations/standalone/manual/staking.md) for instructions on how to stake.
+
+
+
+**NOTE:**
+You can also get further details by looking into [tutorial on how to set up a standalone validator](https://docs.sifchain.finance/developers/tutorials/setup-standalone-validator-node-manually)
