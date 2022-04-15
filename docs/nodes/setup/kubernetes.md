@@ -143,4 +143,4 @@ For BetaNet:
 
 ## Support
 
-Please join Discord [here]https://discord.gg/sifchain) to join other community members running validators.
+Please join Discord [here](https://discord.gg/sifchain) to join other community members running validators.
