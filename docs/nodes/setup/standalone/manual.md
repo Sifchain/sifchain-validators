@@ -4,6 +4,8 @@
 
 - Clone the repository (`git clone https://github.com/Sifchain/sifnode.git`)
 - [Golang 1.16+](https://golang.org/doc/install)
+- make
+- gcc
 
 ## sifnoded
 
@@ -12,7 +14,7 @@
 To compile and install, run:
 
 ```console
-git checkout testnet-0.9.0 && make clean install
+git checkout testnet && make clean install
 ```
 
 ### BetaNet
@@ -50,7 +52,7 @@ go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0
 ```console
 mkdir -p "${HOME}"/.sifnoded/cosmovisor/genesis/bin
 mkdir "${HOME}"/.sifnoded/cosmovisor/upgrades
-cp "${GOPATH}"/bin/sifnoded "${HOME}"/.sifnoded/cosmovisor/genesis/bin
+cp "$([ -z $GOPATH ] && echo $HOME/go || echo $GOPATH )"/bin/sifnoded "${HOME}"/.sifnoded/cosmovisor/genesis/bin
 ```
 
 2. Add the `cosmovisor` environment variables (recommend you set these up to be added when the instance boots):
@@ -61,6 +63,7 @@ export DAEMON_RESTART_AFTER_UPGRADE=true
 export DAEMON_ALLOW_DOWNLOAD_BINARIES=false
 export DAEMON_NAME=sifnoded
 export UNSAFE_SKIP_BACKUP=true
+export PATH=$PATH:"${HOME}"/.sifnoded/cosmovisor/genesis/bin
 ```
 
 If you wish to manually download and install new binaries each time an upgrade is issued, then please set:
