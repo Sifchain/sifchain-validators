@@ -10,9 +10,13 @@ In order to participate in consensus, you'll need to stake (bond) your node. On 
 
 2. Generate a new key (if you haven't already):
 
+2a. New wallet:
 ```console
-sifnoded keys add <moniker> --keyring-backend file
+sifnoded keys add <key_name> --keyring-backend file
 ```
+2b. Recover/import wallet
+```console
+siftnoded keys add <key_name> --recover --keyring-backend file
 
 where:
 
@@ -23,7 +27,7 @@ where:
 e.g.:
 
 ```console
-sifnoded keys add my-node --keyring-backend file
+sifnoded keys add key_name --keyring-backend file
 ```
 
 _Please ensure you save the `mnemonic` and the keyring password you entered somewhere secure._
@@ -40,9 +44,9 @@ _Please ensure you save the `mnemonic` and the keyring password you entered some
   --chain-id <chain_id> \
   --min-self-delegation "1" \
   --gas <gas> \
-  --fee 100000000000000000rowan \
+  --fees 100000000000000000rowan \
   --moniker <moniker> \
-  --from <moniker> \
+  --from <key_name> \
   --node <node_rpc_address> \
   --keyring-backend file
 ```
@@ -56,6 +60,7 @@ where:
 |`<commission_rate>`|The initial commission rate percentage.|
 |`<chain_id>`|The chain ID of the network you are connected to (`sifchain-testnet-1` or `sifchain-1`).|
 |`<moniker>`|The moniker or name of your node as you want it to appear on the network.|
+|`<key_name>`|The wallet/key name from 2a. and 2b.|
 |`<amount>`|The amount to stake, including the denomination (e.g.: `100000000rowan`). The precision used is 1e18.|
 |`<gas>`| The per-transaction gas limit (e.g.: `300000`).|
 |`<node_rpc_address>`|The address to broadcast the transaction to (`tcp://rpc-testnet.sifchain.finance:80` for TestNet or `tcp://rpc.sifchain.finance:80`) for BetaNet.|
@@ -74,9 +79,9 @@ For TestNet:
   --chain-id sifchain-testnet-1 \
   --min-self-delegation "1" \
   --gas 300000 \
-  --fee 100000000000000000rowan \
+  --fees 100000000000000000rowan \
   --moniker my-node \
-  --from my-node \
+  --from my-wallet \
   --node tcp://rpc-testnet.sifchain.finance:80 \
   --keyring-backend file
 ```
@@ -93,9 +98,9 @@ For BetaNet:
   --chain-id sifchain-1 \
   --min-self-delegation "1" \
   --gas 300000 \
-  --fee 100000000000000000rowan \
+  --fees 100000000000000000rowan \
   --moniker my-node \
-  --from my-node \
+  --from my-wallet \
   --node tcp://rpc.sifchain.finance:80 \
   --keyring-backend file
 ```
