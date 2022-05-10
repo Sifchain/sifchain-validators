@@ -80,8 +80,8 @@ For TestNet:
   --min-self-delegation "1" \
   --gas 300000 \
   --fees 100000000000000000rowan \
-  --moniker my-node \
-  --from my-wallet \
+  --moniker moniker \
+  --from key_name \
   --node tcp://rpc-testnet.sifchain.finance:80 \
   --keyring-backend file
 ```
@@ -99,8 +99,8 @@ For BetaNet:
   --min-self-delegation "1" \
   --gas 300000 \
   --fees 100000000000000000rowan \
-  --moniker my-node \
-  --from my-wallet \
+  --moniker moniker \
+  --from key_name \
   --node tcp://rpc.sifchain.finance:80 \
   --keyring-backend file
 ```
