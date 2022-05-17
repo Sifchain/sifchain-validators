@@ -32,4 +32,4 @@ _Please remember to securely store your mnemonic that is shown to you during the
 
 ## Support
 
-Please join Discord [here](https://discord.gg/ePKtpunN) to join other community members running validators.
+Please join Discord [here](https://discord.gg/sifchain) to join other community members running validators.
