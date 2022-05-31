@@ -30,7 +30,7 @@ git checkout mainnet-0.9.0 && make clean install
 To compile and install, run:
 
 ```console
-git checkout v0.13.2 && make clean install
+git checkout v0.13.3 && make clean install
 ```
 
 ## cosmovisor
