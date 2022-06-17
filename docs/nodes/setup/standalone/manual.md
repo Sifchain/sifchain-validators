@@ -1,5 +1,6 @@
 # Standalone (Manual)
 
+Tutorial can be found [here](https://docs.sifchain.finance/developers/tutorials/setup-standalone-validator-node-manually) 
 ## Prerequisites / Dependencies:
 
 - Clone the repository (`git clone https://github.com/Sifchain/sifnode.git`)
